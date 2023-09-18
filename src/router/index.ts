@@ -9,7 +9,11 @@ const router = createRouter({
     },
     {
       path: '/home',
-      component: () => import('@/views/homeFrame.vue'),
+      component: () => import('@/pages/homeFrame.vue'),
+    },
+    {
+      path: '/admin',
+      component: () => import('@/pages/adminFrame.vue'),
     },
   ],
 });

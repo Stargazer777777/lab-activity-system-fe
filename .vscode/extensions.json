@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "jingwang37.element-plus-snippets",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "vue.vscode-typescript-vue-plugin",
+        "vue.volar"
+    ]
+}
