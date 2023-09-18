@@ -10,6 +10,12 @@ const router = createRouter({
     {
       path: '/home',
       component: () => import('@/pages/homeFrame.vue'),
+      children: [
+        {
+          path: 'somePage',
+          component: () => import('@/pages/homeFrame/somePage.vue'),
+        },
+      ],
     },
     {
       path: '/admin',
