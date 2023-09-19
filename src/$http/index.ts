@@ -3,7 +3,7 @@ import type { AxiosRequestConfig } from 'axios';
 import { ElMessage } from 'element-plus';
 
 export interface BkResponse {
-  data: object; // 出错时这一项将没有
+  data: object;
   msg: string;
   success: boolean;
 }

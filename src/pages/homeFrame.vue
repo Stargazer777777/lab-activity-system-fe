@@ -1,6 +1,14 @@
-<template><div class="title">hello world</div></template>
+<template>
+  <div>
+    <HomeHeader />
+    <div class="container">
+      <RouterView />
+    </div>
+  </div>
+</template>
 
 <script setup lang="ts">
+import HomeHeader from '@/components/homeFrame/homeHeader.vue';
 import { ref } from 'vue';
 
 const color = ref('red');
