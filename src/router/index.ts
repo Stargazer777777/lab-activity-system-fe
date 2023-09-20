@@ -16,6 +16,10 @@ const router = createRouter({
       path: '/admin',
       component: () => import('@/pages/adminFrame.vue'),
     },
+    {
+      path: '/userLogin',
+      component: () => import('@/pages/userLogin.vue'),
+    },
   ],
 });
 
