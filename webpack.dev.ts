@@ -26,9 +26,9 @@ export default (): DevWebpackConfig => {
         reconnect: true,
       },
       proxy: {
-        '/api': {
-          target: 'http://localhost:3000',
-          pathRewrite: { '^/api': '' },
+        '/javaApi': {
+          target: 'http://localhost:30000',
+          pathRewrite: { '^/javaApi': '' },
           secure: false,
         },
       },
