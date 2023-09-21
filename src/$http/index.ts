@@ -72,3 +72,5 @@ export class JavaHttpTool {
     }
   }
 }
+
+JavaHttpTool.setBaseUrl(import.meta.env['JAVA_HTTP_BASE']);
