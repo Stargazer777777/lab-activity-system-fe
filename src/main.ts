@@ -2,7 +2,9 @@ import { createApp } from 'vue';
 import App from './App.vue';
 const app = createApp(App);
 
-import './scss/base';
+import './scss/_index.scss';
+import 'element-plus/es/components/message/style/css';
+import 'element-plus/es/components/message-box/style/css';
 
 const asyncRegister = async () => {
   const { default: store } = await import('./stores/index');
