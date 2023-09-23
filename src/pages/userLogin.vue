@@ -56,7 +56,7 @@
         </el-form-item>
       </el-form>
       <span style="margin-left: 30%"
-        >还没有账号？<a href="">点击去注册</a></span
+        >还没有账号？<ins @click="transferToRegister">点击去注册</ins></span
       >
     </div>
   </div>
@@ -191,7 +191,6 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 //获取图形验证码
 async function getcaptchaImage() {
-  console.log('你哈');
   const res = await getPictualCodeApi();
   url.value.captchaImage = res.data.captchaImage;
   url.value.captchaId = res.data.captchaId;
@@ -207,6 +206,11 @@ const url = ref({
   captchaId: '',
   captchaImage: '',
 });
+
+//transfer to register
+function transferToRegister(): void {
+  router.push('/userRegister');
+}
 </script>
 <style scoped>
 .psdLogin {
