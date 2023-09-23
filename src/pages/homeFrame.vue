@@ -11,13 +11,12 @@
 
 <script setup lang="ts">
 import HomeHeader from '@/components/homeFrame/homeHeader.vue';
-import { ref } from 'vue';
-
-const color = ref('red');
 </script>
 
 <style scoped lang="scss">
-.title {
-  color: v-bind(color);
+.container {
+  padding: 10px;
+  min-width: 1280px;
+  min-height: calc(100vh - 60px);
 }
 </style>

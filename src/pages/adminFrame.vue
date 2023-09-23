@@ -11,4 +11,10 @@
 import AdminMenu from '@/components/adminFrame/adminMenu.vue';
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  padding: 10px;
+  min-width: 1280px;
+  min-height: calc(100vh - 60px);
+}
+</style>

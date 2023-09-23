@@ -15,6 +15,12 @@ const router = createRouter({
     {
       path: '/admin',
       component: () => import('@/pages/adminFrame.vue'),
+      children: [
+        {
+          path: 'activity',
+          component: () => import('@/pages/adminFrame/activityAdmin.vue'),
+        },
+      ],
     },
     {
       path: '/userLogin',
