@@ -68,7 +68,7 @@
           {{ formatDate(row.updateTime) }}
         </template>
       </el-table-column> -->
-      <el-table-column label="操作" fixed="right" width="250" align="center">
+      <el-table-column label="操作" fixed="right" width="280" align="center">
         <template #default="{ row }: { row: Activity }">
           <el-button-group size="small">
             <el-button type="primary" :icon="Link" @click="toDetail(row)"
@@ -80,12 +80,6 @@
               @click="toStatistics(row)"
               >统计</el-button
             >
-            <el-button
-              type="primary"
-              :icon="User"
-              @click="toRegistrationAdmin(row)"
-              >报名管理</el-button
-            >
             <el-button type="primary" :icon="Notification" @click="notify(row)"
               >通知</el-button
             >
@@ -94,6 +88,15 @@
             >
             <el-button type="danger" :icon="Delete" @click="del(row)"
               >删除</el-button
+            >
+            <el-button type="primary" :icon="PieChart" @click="toFeedback(row)"
+              >查看反馈</el-button
+            >
+            <el-button
+              type="primary"
+              :icon="User"
+              @click="toRegistrationAdmin(row)"
+              >报名管理</el-button
             >
           </el-button-group>
         </template>
@@ -339,10 +342,18 @@ const toDetail = (activity: Activity) => {
 const toStatistics = (activity: Activity) => {
   console.log('to statistics', activity);
 };
+
+const toFeedback = (activity: Activity) => {
+  router.push({
+    path: '/admin/feedback',
+    query: { 'activity-id': activity.id },
+  });
+};
+
 const toRegistrationAdmin = (activity: Activity) => {
   router.push({
     path: '/admin/registration',
-    query: { activityId: activity.id },
+    query: { 'activity-id': activity.id },
   });
 };
 const notify = (activity: Activity) => {
