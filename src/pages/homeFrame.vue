@@ -1,6 +1,4 @@
 <template>
-  <div class="title">hello world</div>
-  =======
   <div>
     <HomeHeader />
     <div class="container">
