@@ -65,6 +65,7 @@
 import { ref, watch } from 'vue';
 import { activityRule } from '@/rules/activityRule';
 import { Activity } from '@/typing/common';
+import AMap from 'AMap';
 
 const dateRange = ref<[Date, Date]>([new Date(), new Date()]);
 watch(
@@ -74,6 +75,7 @@ watch(
     formData.value.endTime = newVal[1].getTime();
   }
 );
+console.log(AMap, '===>');
 
 const formData = ref<Partial<Activity>>({});
 </script>

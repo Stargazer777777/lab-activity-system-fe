@@ -5,6 +5,9 @@ const app = createApp(App);
 import './scss/_index.scss';
 import 'element-plus/es/components/message/style/css';
 import 'element-plus/es/components/message-box/style/css';
+import { AMapTool } from './utils/aMapTool';
+
+AMapTool.initAMapService();
 
 const asyncRegister = async () => {
   const { default: store } = await import('./stores/index');
