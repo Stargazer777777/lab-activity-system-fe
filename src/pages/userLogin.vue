@@ -6,6 +6,7 @@
       align-items: center;
       justify-content: center;
       height: 100vh;
+      background-repeat: no-repeat;
       background-image: url('https://pic.90sheji.com/design/00/00/10/50/5fb124ae37eb4.jpg%21/fwfh/1920x0/clip/0x1275a0a0/quality/90/unsharp/true/compress/true/watermark/url/LzkwX3dhdGVyX3Y2LnBuZw==/repeat/true');
     "
   >
@@ -67,7 +68,7 @@
     </div>
   </div>
   <el-dialog v-model="dialogFormVisible" title="邮箱验证码登录">
-    <el-form :model="emailCodeLoginForm">
+    <el-form :model="emailCodeLoginForm" @submit.prevent>
       <el-form-item label="邮箱号" :label-width="formLabelWidth">
         <el-input v-model="emailCodeLoginForm.email" autocomplete="off"
           ><template #append>

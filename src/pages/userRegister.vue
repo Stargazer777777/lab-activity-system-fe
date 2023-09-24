@@ -6,6 +6,7 @@
         label-width="120px"
         :model="registerFormData"
         :rules="rules"
+        @submit.prevent
       >
         <el-form-item style="margin-top: 10px" prop="email" label="邮箱号"
           ><el-input v-model="registerFormData.email" placeholder="" clearable>
