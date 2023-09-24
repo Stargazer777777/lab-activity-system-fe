@@ -32,6 +32,8 @@ export class AuthToolImpl implements AuthToolI {
   }
   removeAutorization() {
     JavaHttpTool.removeAuthorization();
-    localStorage.clear();
+    localStorage.removeItem('Authorization');
   }
 }
+
+export const AuthTool = new AuthToolImpl();
