@@ -28,3 +28,10 @@ export interface Registration {
   activityId: string;
   isCheckIn: boolean;
 }
+
+export interface Feedback {
+  id: string;
+  content: string;
+  userId: string;
+  activityId: string;
+}

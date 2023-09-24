@@ -1,5 +1,6 @@
 <template>
   <div>
+    <PageHeader title="报名管理" sub-title="活动xxx" />
     <el-form
       :model="filterFormData"
       ref="filterFormRef"
@@ -19,6 +20,16 @@
           <el-radio :label="true">已签到</el-radio>
           <el-radio :label="false">未签到</el-radio>
         </el-radio-group>
+      </el-form-item>
+      <el-form-item label="签到状态" label-width="80"
+        ><el-button-group>
+          <el-button type="primary" size="default" :disabled="true"
+            >通知已选择的</el-button
+          >
+          <el-button type="danger" size="default" :disabled="true"
+            >删除已选择的</el-button
+          >
+        </el-button-group>
       </el-form-item>
     </el-form>
 
@@ -71,6 +82,7 @@
 import { ref } from 'vue';
 import { Registration, PageInfo } from '@/typing/common';
 import { Delete, Notification } from '@element-plus/icons-vue';
+import PageHeader from '@/components/common/pageHeader.vue';
 
 const testData: Registration[] = [
   {
