@@ -4,5 +4,6 @@ export class AMapTool {
     (window as any)._AMapSecurityConfig = {
       serviceHost: import.meta.env.AMapServiceHost,
     };
+    // this.addPublicPlugins();
   }
 }

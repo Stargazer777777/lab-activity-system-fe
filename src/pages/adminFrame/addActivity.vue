@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row :gutter="20">
     <el-col :span="12" :offset="0">
       <el-form
         :model="formData"
@@ -57,7 +57,9 @@
         </el-form-item>
       </el-form>
     </el-col>
-    <el-col :span="12" :offset="0"></el-col>
+    <el-col :span="12" :offset="0">
+      <ActivityMap @on-select-position="handleSelectPosition"
+    /></el-col>
   </el-row>
 </template>
 
@@ -65,7 +67,7 @@
 import { ref, watch } from 'vue';
 import { activityRule } from '@/rules/activityRule';
 import { Activity } from '@/typing/common';
-import AMap from 'AMap';
+import ActivityMap from '@/components/adminFrame/activityAdmin/addActivityMap.vue';
 
 const dateRange = ref<[Date, Date]>([new Date(), new Date()]);
 watch(
@@ -75,9 +77,12 @@ watch(
     formData.value.endTime = newVal[1].getTime();
   }
 );
-console.log(AMap, '===>');
-
 const formData = ref<Partial<Activity>>({});
+
+const handleSelectPosition = (position: { long: number; lat: number }) => {
+  formData.value.locationLong = position.long;
+  formData.value.locationLat = position.lat;
+};
 </script>
 
 <style lang="scss" scoped></style>
