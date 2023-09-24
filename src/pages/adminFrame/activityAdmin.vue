@@ -340,7 +340,10 @@ const toStatistics = (activity: Activity) => {
   console.log('to statistics', activity);
 };
 const toRegistrationAdmin = (activity: Activity) => {
-  console.log('to toRegistrationAdmin', activity);
+  router.push({
+    path: '/admin/registration',
+    query: { activityId: activity.id },
+  });
 };
 const notify = (activity: Activity) => {
   console.log('to notify', activity);

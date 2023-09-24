@@ -18,3 +18,13 @@ export interface PageInfo {
   pageSize: number;
   total: number;
 }
+
+export interface Registration {
+  id: string;
+  userId: string;
+  stuNo: string;
+  username: string;
+  sex: 0 | 1;
+  activityId: string;
+  isCheckIn: boolean;
+}
