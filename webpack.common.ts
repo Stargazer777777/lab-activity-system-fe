@@ -22,6 +22,9 @@ const config = (env: Record<string, boolean>): webpack.Configuration => {
       filename: 'js/[name].bundle.js',
       clean: true,
     },
+    externals: {
+      AMap: 'AMap',
+    },
     stats: 'minimal', // 设置控制台展示的信息
     plugins: [
       // 生成html
