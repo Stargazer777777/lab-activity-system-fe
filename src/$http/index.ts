@@ -32,6 +32,15 @@ export class JavaHttpTool {
     JavaHttpTool.httpInstance.defaults.baseURL = baseUrl;
   }
 
+  static setAuthorization(Authorization: string) {
+    JavaHttpTool.httpInstance.defaults.headers.common['Authorization'] =
+      Authorization;
+  }
+
+  static removeAuthorization() {
+    JavaHttpTool.httpInstance.defaults.headers.delete['Authorization'];
+  }
+
   private static errHandler(err: AxiosError, httpOption?: HttpOption) {
     const statusCode = err.status;
 

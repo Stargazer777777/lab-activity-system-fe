@@ -26,6 +26,14 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/userLogin',
+      component: () => import('@/pages/userLogin.vue'),
+    },
+    {
+      path: '/userRegister',
+      component: () => import('@/pages/userRegister.vue'),
+    },
   ],
 });
 
