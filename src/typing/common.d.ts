@@ -3,8 +3,8 @@ export interface Activity {
   title: string;
   description: string;
   locationName: string;
-  locationLong: string;
-  locationLat: string;
+  locationLong: number;
+  locationLat: number;
   limitRegistration: number;
   likeNumber: number;
   startTime: number;
