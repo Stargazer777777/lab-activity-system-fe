@@ -24,6 +24,14 @@ const router = createRouter({
           path: 'add-activity',
           component: () => import('@/pages/adminFrame/addActivity.vue'),
         },
+        {
+          path: 'registration',
+          component: () => import('@/pages/adminFrame/registrationAdmin.vue'),
+        },
+        {
+          path: 'feedback',
+          component: () => import('@/pages/adminFrame/feedbackAdmin.vue'),
+        },
       ],
     },
     {
