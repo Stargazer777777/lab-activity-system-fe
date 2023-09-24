@@ -8,7 +8,13 @@
       size="default"
     >
       <el-form-item>
-        <el-button type="primary" size="default">添加活动</el-button>
+        <el-button
+          type="primary"
+          :icon="Plus"
+          size="default"
+          @click="toAddActivity"
+          >添加活动</el-button
+        >
       </el-form-item>
       <el-form-item label="标题" prop="title">
         <el-input
@@ -120,7 +126,9 @@ import {
   PieChart,
   User,
   Notification,
+  Plus,
 } from '@element-plus/icons-vue';
+import router from '@/router/index';
 
 const testData: Activity[] = [
   {
@@ -319,6 +327,10 @@ const filterFormData = ref<FilterFormData>({
 
 const formatDate = (timestamp: number) => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss');
+};
+
+const toAddActivity = () => {
+  router.push('/admin/add-activity');
 };
 
 const toDetail = (activity: Activity) => {

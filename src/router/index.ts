@@ -20,6 +20,10 @@ const router = createRouter({
           path: 'activity',
           component: () => import('@/pages/adminFrame/activityAdmin.vue'),
         },
+        {
+          path: 'add-activity',
+          component: () => import('@/pages/adminFrame/addActivity.vue'),
+        },
       ],
     },
   ],

@@ -17,3 +17,4 @@ plugins:
 rules:
   prettier/prettier: error
   vue/no-unused-vars: warn
+  '@typescript-eslint/no-empty-function': warn
