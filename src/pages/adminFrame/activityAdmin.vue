@@ -1,5 +1,34 @@
 <template>
   <div>
+    <el-form
+      :model="filterFormData"
+      ref="filterFormRef"
+      label-width="60px"
+      :inline="true"
+      size="default"
+    >
+      <el-form-item>
+        <el-button type="primary" size="default">添加活动</el-button>
+      </el-form-item>
+      <el-form-item label="标题" prop="title">
+        <el-input
+          v-model="filterFormData.title"
+          placeholder="筛选活动"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="活动状态" label-width="80">
+        <el-select v-model="filterFormData.status" filterable>
+          <el-option
+            v-for="item in activityStatusOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
+          </el-option>
+        </el-select>
+      </el-form-item>
+    </el-form>
+
     <el-table :data="tableData" border stripe>
       <el-table-column type="index" width="50" />
       <el-table-column label="id" prop="id" width="50" />
@@ -251,6 +280,42 @@ const pageSizeChange = () => {
 };
 
 const tableData = ref<Activity[]>(testData);
+
+enum ActivityStatus {
+  'all',
+  'notStart',
+  'inProgress',
+  'end',
+}
+
+const activityStatusOptions: Array<{ label: string; value: ActivityStatus }> = [
+  {
+    label: '所有',
+    value: ActivityStatus.all,
+  },
+  {
+    label: '未开始',
+    value: ActivityStatus.notStart,
+  },
+  {
+    label: '已经开始',
+    value: ActivityStatus.inProgress,
+  },
+  {
+    label: '已经结束',
+    value: ActivityStatus.end,
+  },
+];
+
+interface FilterFormData {
+  title: string;
+  status: ActivityStatus;
+}
+
+const filterFormData = ref<FilterFormData>({
+  title: '',
+  status: ActivityStatus.all,
+});
 
 const formatDate = (timestamp: number) => {
   return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss');
