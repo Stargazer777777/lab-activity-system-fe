@@ -5,6 +5,8 @@ const app = createApp(App);
 import './scss/_index.scss';
 import 'element-plus/es/components/message/style/css';
 import 'element-plus/es/components/message-box/style/css';
+// 引入wangEditor的css
+import '@wangeditor/editor/dist/css/style.css';
 import { AMapTool } from './utils/aMapTool';
 
 AMapTool.initAMapService();
