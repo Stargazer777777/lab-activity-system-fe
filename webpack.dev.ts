@@ -31,6 +31,11 @@ export default (): DevWebpackConfig => {
           pathRewrite: { '^/javaApi': '' },
           secure: false,
         },
+        '/nestApi': {
+          target: 'http://localhost:3000',
+          pathRewrite: { '^/nestApi': '' },
+          secure: false,
+        },
       },
     },
     plugins: [

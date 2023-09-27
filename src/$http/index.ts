@@ -25,23 +25,28 @@ export class BkError extends Error {
   }
 }
 
-export class JavaHttpTool {
-  private static httpInstance = axios.create();
+class HttpTool {
+  protected httpInstance = axios.create();
 
-  static setBaseUrl(baseUrl: string) {
-    JavaHttpTool.httpInstance.defaults.baseURL = baseUrl;
+  constructor(baseUrl?: string) {
+    if (baseUrl) {
+      this.setBaseUrl(baseUrl);
+    }
   }
 
-  static setAuthorization(Authorization: string) {
-    JavaHttpTool.httpInstance.defaults.headers.common['Authorization'] =
-      Authorization;
+  setBaseUrl(baseUrl: string) {
+    this.httpInstance.defaults.baseURL = baseUrl;
   }
 
-  static removeAuthorization() {
-    JavaHttpTool.httpInstance.defaults.headers.delete['Authorization'];
+  setAuthorization(Authorization: string) {
+    this.httpInstance.defaults.headers.common['Authorization'] = Authorization;
   }
 
-  private static errHandler(err: AxiosError, httpOption?: HttpOption) {
+  removeAuthorization() {
+    this.httpInstance.defaults.headers.delete['Authorization'];
+  }
+
+  protected errHandler(err: AxiosError, httpOption?: HttpOption) {
     const statusCode = err.status;
 
     let errMsg = '未知错误';
@@ -65,16 +70,16 @@ export class JavaHttpTool {
     throw bkError;
   }
 
-  static async send(
+  async send(
     config: AxiosRequestConfig,
     httpOption?: HttpOption
   ): Promise<BkResponse> {
     try {
-      const axiosResponse = await JavaHttpTool.httpInstance<BkResponse>(config);
+      const axiosResponse = await this.httpInstance<BkResponse>(config);
       return axiosResponse.data as BkResponse;
     } catch (err) {
       if (err instanceof AxiosError) {
-        throw JavaHttpTool.errHandler(err, httpOption);
+        throw this.errHandler(err, httpOption);
       } else {
         throw err;
       }
@@ -82,4 +87,6 @@ export class JavaHttpTool {
   }
 }
 
-JavaHttpTool.setBaseUrl(import.meta.env['JAVA_HTTP_BASE']);
+export const JavaHttpTool = new HttpTool(import.meta.env['JAVA_HTTP_BASE']);
+
+export const NestHttpTool = new HttpTool(import.meta.env['NEST_HTTP_BASE']);
