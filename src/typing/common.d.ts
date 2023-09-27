@@ -35,3 +35,19 @@ export interface AddNoticifaction {
   sendTime: number;
   activityId: string;
 }
+export interface Registration {
+  id: string;
+  userId: string;
+  stuNo: string;
+  username: string;
+  sex: 0 | 1;
+  activityId: string;
+  isCheckIn: boolean;
+}
+
+export interface Feedback {
+  id: string;
+  content: string;
+  userId: string;
+  activityId: string;
+}

@@ -188,28 +188,27 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   // 复制验证码
   loginValidateForm.captchaId = url.value.captchaId;
   // 发送登录请求
-  const data = await loginWithPwdApi(loginValidateForm);
-  if (data.success === true) {
-    // 提示信息
-    warnMessageDetail.value.type = 'success';
-    //根据不同身份跳转不同页面
-    if (data.data.user.role === '普通用户') {
-      router.push('/home');
-    } else {
-      router.push('/admin');
+  try {
+    const data = await loginWithPwdApi(loginValidateForm);
+    if (data.success === true) {
+      //根据不同身份跳转不同页面
+      if (data.data.user.role === '普通用户') {
+        router.push('/home');
+      } else {
+        router.push('/admin');
+      }
+      // 设置好当前用户的本地缓存
+      const authTool: AuthToolI = new AuthToolImpl();
+      authTool.setAuthrization(data.data.Authorization);
+      // 登录成功的提示信息
+      warnMessageDetail.value.type = 'success';
+      warnMessageDetail.value.message = data.msg;
+      ElMessage(warnMessageDetail.value);
     }
-    console.log('登录成功');
-    // 设置好当前用户的本地缓存
-    const authTool: AuthToolI = new AuthToolImpl();
-    authTool.setAuthrization(data.data.Authorization);
-  } else {
-    warnMessageDetail.value.type = 'error';
-    console.log('登录失败');
-    // 同时刷新验证码
+  } catch (error) {
+    //登录失败一次刷新一次
     getcaptchaImage();
   }
-  warnMessageDetail.value.message = data.msg;
-  ElMessage(warnMessageDetail.value);
 };
 //--------密码方式登录方式提交表单数据结束
 
@@ -255,22 +254,18 @@ const emailCodeLoginForm = reactive({
   emailCode: '',
 });
 const getEmailCodeForLogin = async () => {
-  console.log('发送开始');
   const res = await getEmailCodeByEmailApi({
     email: emailCodeLoginForm.email,
     action: 'ForLogin',
   });
-  console.log('发送结束');
   if (res.success === true) {
-    console.log('获取邮箱验证成功');
-
+    // 提示发送成功
     warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = res.msg;
+    ElMessage(warnMessageDetail.value);
   } else {
     console.log('获取邮箱验证失败');
-    warnMessageDetail.value.type = 'error';
   }
-  warnMessageDetail.value.message = res.msg;
-  ElMessage(warnMessageDetail.value);
 };
 //提交数据
 const submitEmailCodeLoginForm = async () => {
@@ -296,8 +291,6 @@ const submitEmailCodeLoginForm = async () => {
   // 发送登录请求
   const data = await loginWithEmailCode(emailCodeLoginForm);
   if (data.success === true) {
-    // 提示信息
-    warnMessageDetail.value.type = 'success';
     //根据不同身份跳转不同页面
     if (data.data.user.role === '普通用户') {
       router.push('/home');
@@ -308,12 +301,11 @@ const submitEmailCodeLoginForm = async () => {
     // 设置好当前用户的本地缓存
     const authTool: AuthToolI = new AuthToolImpl();
     authTool.setAuthrization(data.data.Authorization);
-  } else {
-    warnMessageDetail.value.type = 'error';
-    console.log('登录失败');
+    // 提示信息
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = data.msg;
+    ElMessage(warnMessageDetail.value);
   }
-  warnMessageDetail.value.message = data.msg;
-  ElMessage(warnMessageDetail.value);
 };
 // --------邮箱验证码登录结束
 </script>

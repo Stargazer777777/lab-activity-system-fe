@@ -1,3 +1,4 @@
+import { AddNoticifaction } from '@/typing/common';
 import { JavaHttpTool } from '..';
 
 export const loginWithPwdApi = (body: {
@@ -57,6 +58,13 @@ export const getUserNameAndIdByActivityId = (body: { activityId: string }) => {
   return JavaHttpTool.send({
     method: 'POST',
     url: '/admin/getUserNameAndIdByActivityId',
+    data: body,
+  });
+};
+export const adminAddNoticifaction = (body: AddNoticifaction) => {
+  return JavaHttpTool.send({
+    method: 'POST',
+    url: '/admin/addNotification',
     data: body,
   });
 };

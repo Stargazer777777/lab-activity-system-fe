@@ -48,9 +48,14 @@
 <script lang="ts" setup>
 import { useNotificationStore } from '@/stores/modules/notificationStore';
 import { ref } from 'vue';
-import { getUserNameAndIdByActivityId } from '@/$http/apis/authrization';
+import {
+  getUserNameAndIdByActivityId,
+  adminAddNoticifaction,
+} from '@/$http/apis/authrization';
 import { reactive } from 'vue';
 import { AddNoticifaction } from '../../typing/common';
+import type { MessageOptions } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import { watch } from 'vue';
 const notificationStore = useNotificationStore();
 
@@ -79,8 +84,21 @@ const userNotification = reactive<AddNoticifaction>({
 const addNotifucation = async () => {
   userNotification.userIds = notificationStore.userIds; //store里面的用户id就代表需要发送的用户列表，传给后端
   userNotification.activityId = notificationStore.activityId; //store里面的活动id，传给后端
+  const res = await adminAddNoticifaction(userNotification);
+  if (res.success === true) {
+    // 成功创建
+    // 提示成功
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = res.msg;
+    ElMessage(warnMessageDetail.value);
+    // 关闭弹窗
+    notificationStore.visiable = false;
+  }
   console.log(userNotification);
 };
+//--------消息提示开始
+const warnMessageDetail = ref<MessageOptions>({});
+//--------消息提示结束
 // 时间类型处理
 const date = ref(new Date());
 watch(

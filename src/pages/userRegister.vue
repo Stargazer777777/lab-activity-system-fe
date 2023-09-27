@@ -64,9 +64,9 @@ import {
   registerWithEmailAndStuNo,
 } from '@/$http/apis/authrization';
 import { ElMessage } from 'element-plus';
-import type { FormInstance, FormRules } from 'element-plus';
+import type { FormInstance, FormRules, MessageOptions } from 'element-plus';
 import { useRouter } from 'vue-router';
-// 必须放在顶层
+// router必须放在顶层
 const router = useRouter();
 function transferToLogin(): void {
   router.push('/userLogin');
@@ -168,31 +168,20 @@ const registerFormData = reactive<Register>({
 
 // --------邮箱验和学号注册开始
 const getEmailCodeForRegister = async () => {
-  console.log('发送开始');
   const res = await getEmailCodeByEmailApi({
     email: registerFormData.email,
     action: 'ForRegister',
   });
-  console.log('发送结束');
   if (res.success === true) {
-    console.log('获取邮箱验证成功');
-    warnMessageDetail.type = 'success';
-  } else {
-    console.log('获取邮箱验证失败');
-    warnMessageDetail.type = 'error';
+    // 发送邮箱验证码成功
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = res.msg;
+    ElMessage(warnMessageDetail.value);
   }
-  warnMessageDetail.message = res.msg;
-  ElMessage(warnMessageDetail);
 };
-//消息提示
-interface warnMessage {
-  message: string;
-  type: string;
-}
-const warnMessageDetail = reactive<warnMessage>({
-  message: '',
-  type: '',
-});
+//--------消息提示开始
+const warnMessageDetail = ref<MessageOptions>({});
+//--------消息提示结束
 //重置表单数据
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -206,14 +195,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   // 发送登录请求
   const data = await registerWithEmailAndStuNo(registerFormData);
   if (data.success === true) {
-    warnMessageDetail.type = 'success';
-    console.log('注册成功');
-  } else {
-    warnMessageDetail.type = 'error';
-    console.log('注册失败');
+    // 注册成功
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = data.msg;
+    ElMessage(warnMessageDetail.value);
   }
-  warnMessageDetail.message = data.msg;
-  ElMessage(warnMessageDetail);
 };
 // --------邮箱验和学号注册结束
 </script>
