@@ -8,6 +8,7 @@ import WebpackBar from 'webpackbar';
 import ESLintPlugin from 'eslint-webpack-plugin';
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 
+// element plus自动导入
 import AutoImport from 'unplugin-auto-import/webpack';
 import Components from 'unplugin-vue-components/webpack';
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers';
