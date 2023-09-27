@@ -19,8 +19,8 @@ export interface HttpOption {
 export class BkError extends Error {
   constructor(bkErrorResponse: BkErrorResponse) {
     super();
-    super.stack = 'BkError';
-    super.message = bkErrorResponse.msg;
+    super.name = 'BkError';
+    super.message = bkErrorResponse.msg || 'Unknown error';
     super.cause = bkErrorResponse.detail;
   }
 }
@@ -51,7 +51,7 @@ export class JavaHttpTool {
     if (err.response?.data) {
       const errResponse = err.response.data as BkErrorResponse;
       bkError = new BkError(errResponse);
-      errMsg = errResponse.msg;
+      errMsg = errResponse.msg || '未知错误';
     }
 
     switch (statusCode) {
