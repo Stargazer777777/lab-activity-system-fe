@@ -19,6 +19,22 @@ export interface PageInfo {
   total: number;
 }
 
+export interface LoginEntry {
+  emailOrstuNo: string;
+  email?: string;
+  stuNo?: string;
+  password: string;
+  inputCaptcha: string;
+  captchaId?: string;
+}
+
+export interface AddNoticifaction {
+  userIds: string[];
+  title: string;
+  detail: string;
+  sendTime: number;
+  activityId: string;
+}
 export interface Registration {
   id: string;
   userId: string;

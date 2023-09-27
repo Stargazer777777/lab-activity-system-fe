@@ -7,6 +7,7 @@
       justify-content: center;
       height: 100vh;
       background-repeat: no-repeat;
+      background-size: cover;
       background-image: url('https://pic.90sheji.com/design/00/00/10/50/5fb124ae37eb4.jpg%21/fwfh/1920x0/clip/0x1275a0a0/quality/90/unsharp/true/compress/true/watermark/url/LzkwX3dhdGVyX3Y2LnBuZw==/repeat/true');
     "
   >
@@ -95,7 +96,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
-import type { FormInstance, FormRules } from 'element-plus';
+import type { FormInstance, FormRules, MessageOptions } from 'element-plus';
 import { onMounted } from 'vue';
 import {
   getPictualCodeApi,
@@ -106,20 +107,13 @@ import {
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { AuthToolI, AuthToolImpl } from '@/utils/authTool';
+import { LoginEntry } from '@/typing/common';
 
 // 获取router必须放在顶层
 const router = useRouter();
 
 const ruleForm = ref<FormInstance>();
 // 密码方式登录所需数据类型
-interface LoginEntry {
-  emailOrstuNo: string;
-  email?: string;
-  stuNo?: string;
-  password: string;
-  inputCaptcha: string;
-  captchaId?: string;
-}
 const loginValidateForm = reactive<LoginEntry>({
   emailOrstuNo: '',
   email: '',
@@ -194,40 +188,32 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   // 复制验证码
   loginValidateForm.captchaId = url.value.captchaId;
   // 发送登录请求
-  const data = await loginWithPwdApi(loginValidateForm);
-  if (data.success === true) {
-    // 提示信息
-    warnMessageDetail.type = 'success';
-    //根据不同身份跳转不同页面
-    if (data.data.user.role === '普通用户') {
-      router.push('/home');
-    } else {
-      router.push('/admin');
+  try {
+    const data = await loginWithPwdApi(loginValidateForm);
+    if (data.success === true) {
+      //根据不同身份跳转不同页面
+      if (data.data.user.role === '普通用户') {
+        router.push('/home');
+      } else {
+        router.push('/admin');
+      }
+      // 设置好当前用户的本地缓存
+      const authTool: AuthToolI = new AuthToolImpl();
+      authTool.setAuthrization(data.data.Authorization);
+      // 登录成功的提示信息
+      warnMessageDetail.value.type = 'success';
+      warnMessageDetail.value.message = data.msg;
+      ElMessage(warnMessageDetail.value);
     }
-    console.log('登录成功');
-    // 设置好当前用户的本地缓存
-    const authTool: AuthToolI = new AuthToolImpl();
-    authTool.setAuthrization(data.data.Authorization);
-  } else {
-    warnMessageDetail.type = 'error';
-    console.log('登录失败');
-    // 同时刷新验证码
+  } catch (error) {
+    //登录失败一次刷新一次
     getcaptchaImage();
   }
-  warnMessageDetail.message = data.msg;
-  ElMessage(warnMessageDetail);
 };
 //--------密码方式登录方式提交表单数据结束
 
 //--------消息提示开始
-interface warnMessage {
-  message: string;
-  type: string;
-}
-const warnMessageDetail = reactive<warnMessage>({
-  message: '',
-  type: '',
-});
+const warnMessageDetail = ref<MessageOptions>({});
 //--------消息提示结束
 
 //重置表单数据
@@ -268,21 +254,18 @@ const emailCodeLoginForm = reactive({
   emailCode: '',
 });
 const getEmailCodeForLogin = async () => {
-  console.log('发送开始');
   const res = await getEmailCodeByEmailApi({
     email: emailCodeLoginForm.email,
     action: 'ForLogin',
   });
-  console.log('发送结束');
   if (res.success === true) {
-    console.log('获取邮箱验证成功');
-    warnMessageDetail.type = 'success';
+    // 提示发送成功
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = res.msg;
+    ElMessage(warnMessageDetail.value);
   } else {
     console.log('获取邮箱验证失败');
-    warnMessageDetail.type = 'error';
   }
-  warnMessageDetail.message = res.msg;
-  ElMessage(warnMessageDetail);
 };
 //提交数据
 const submitEmailCodeLoginForm = async () => {
@@ -290,26 +273,24 @@ const submitEmailCodeLoginForm = async () => {
   const r1 = /[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+/;
   const r2 = /^[0-9]{6}$/;
   if (emailCodeLoginForm.email === '' || emailCodeLoginForm.emailCode === '') {
-    warnMessageDetail.type = 'error';
-    warnMessageDetail.message = '邮箱号和验证码都不能为空';
-    ElMessage(warnMessageDetail);
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '邮箱号和验证码都不能为空';
+    ElMessage(warnMessageDetail.value);
     return;
   } else if (!r1.test(emailCodeLoginForm.email)) {
-    warnMessageDetail.type = 'error';
-    warnMessageDetail.message = '邮箱号格式错误';
-    ElMessage(warnMessageDetail);
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '邮箱号格式错误';
+    ElMessage(warnMessageDetail.value);
     return;
   } else if (!r2.test(emailCodeLoginForm.emailCode)) {
-    warnMessageDetail.type = 'error';
-    warnMessageDetail.message = '验证码错误';
-    ElMessage(warnMessageDetail);
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '验证码错误';
+    ElMessage(warnMessageDetail.value);
     return;
   }
   // 发送登录请求
   const data = await loginWithEmailCode(emailCodeLoginForm);
   if (data.success === true) {
-    // 提示信息
-    warnMessageDetail.type = 'success';
     //根据不同身份跳转不同页面
     if (data.data.user.role === '普通用户') {
       router.push('/home');
@@ -320,12 +301,11 @@ const submitEmailCodeLoginForm = async () => {
     // 设置好当前用户的本地缓存
     const authTool: AuthToolI = new AuthToolImpl();
     authTool.setAuthrization(data.data.Authorization);
-  } else {
-    warnMessageDetail.type = 'error';
-    console.log('登录失败');
+    // 提示信息
+    warnMessageDetail.value.type = 'success';
+    warnMessageDetail.value.message = data.msg;
+    ElMessage(warnMessageDetail.value);
   }
-  warnMessageDetail.message = data.msg;
-  ElMessage(warnMessageDetail);
 };
 // --------邮箱验证码登录结束
 </script>
