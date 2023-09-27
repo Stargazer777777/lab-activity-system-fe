@@ -53,3 +53,10 @@ export const loginWithEmailCode = (body: {
     data: body,
   });
 };
+export const getUserNameAndIdByActivityId = (body: { activityId: string }) => {
+  return JavaHttpTool.send({
+    method: 'POST',
+    url: '/admin/getUserNameAndIdByActivityId',
+    data: body,
+  });
+};

@@ -3,7 +3,8 @@ import type { AxiosRequestConfig } from 'axios';
 import { ElMessage } from 'element-plus';
 
 export interface BkResponse {
-  data: object;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
   msg: string;
   success: boolean;
 }
