@@ -44,11 +44,11 @@ class HttpTool {
   }
 
   removeAuthorization() {
-    this.httpInstance.defaults.headers.delete['Authorization'];
+    delete this.httpInstance.defaults.headers.common['Authorization'];
   }
 
   protected errHandler(err: AxiosError, httpOption?: HttpOption) {
-    const statusCode = err.status;
+    const statusCode = err.response?.status;
 
     let errMsg = '未知错误';
 
