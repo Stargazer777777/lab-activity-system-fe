@@ -16,11 +16,12 @@ export interface AuthToolI {
    */
   removeAutorization: () => void;
 }
-import { JavaHttpTool } from '@/$http/index';
+import { JavaHttpTool, NestHttpTool } from '@/$http/index';
 export class AuthToolImpl implements AuthToolI {
   setAuthrization(token: string) {
     localStorage.setItem('Authorization', token);
     JavaHttpTool.setAuthorization(token);
+    NestHttpTool.setAuthorization(token);
   }
   authFromLocal() {
     const token = localStorage.getItem('Authorization');
@@ -32,6 +33,7 @@ export class AuthToolImpl implements AuthToolI {
   }
   removeAutorization() {
     JavaHttpTool.removeAuthorization();
+    NestHttpTool.removeAuthorization();
     localStorage.removeItem('Authorization');
   }
 }

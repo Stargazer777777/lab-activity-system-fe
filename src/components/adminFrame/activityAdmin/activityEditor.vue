@@ -21,9 +21,17 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue';
+import { onBeforeUnmount, ref, shallowRef } from 'vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 import { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor';
+import { watch } from 'vue';
+
+interface Props {
+  modelValue?: string;
+}
+const props = defineProps<Props>();
+
+const emits = defineEmits(['update:modelValue']);
 
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef();
@@ -31,14 +39,18 @@ const editorRef = shallowRef();
 const mode = ref('default');
 
 // 内容 HTML
-const valueHtml = ref('<p>hello</p>');
+const valueHtml = ref(props.modelValue);
+watch(
+  () => props.modelValue,
+  (val) => (valueHtml.value = val)
+);
 
-// 模拟 ajax 异步获取内容
-onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>';
-  }, 1500);
-});
+watch(
+  () => valueHtml.value,
+  (newVal) => {
+    emits('update:modelValue', newVal);
+  }
+);
 
 const toolbarConfig: Partial<IToolbarConfig> = {};
 const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...' };
