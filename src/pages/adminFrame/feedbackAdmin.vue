@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PageHeader title="反馈管理" sub-title="活动xxx" />
+    <PageHeader title="反馈管理" />
     <el-form
       :model="filterFormData"
       ref="filterFormRef"
@@ -16,13 +16,32 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="danger" size="default" :disabled="true"
-          >删除已选择的</el-button
+        <el-popconfirm
+          title="确定要删除吗？"
+          confirmButtonText="确定"
+          cancelButtonText="取消"
+          confirmButtonType="primary"
+          cancelButtonType="text"
+          @confirm="delSelected"
         >
+          <template #reference>
+            <el-button
+              type="danger"
+              size="default"
+              :disabled="!selections.length"
+              >删除已选择的</el-button
+            ></template
+          >
+        </el-popconfirm>
       </el-form-item>
     </el-form>
 
-    <el-table :data="tableData" border stripe>
+    <el-table
+      :data="tableData"
+      border
+      stripe
+      @selection-change="tableSelectHandler"
+    >
       <el-table-column type="selection" width="50" />
       <el-table-column type="index" width="50" />
       <el-table-column label="内容" prop="content" min-width="200" />
@@ -104,8 +123,20 @@ const getTableData = async () => {
 };
 getTableData();
 
+const selections = ref<Feedback[]>([]);
+
+const tableSelectHandler = (rows: Feedback[]) => {
+  selections.value = rows;
+};
+
 const del = async (feedback: Feedback) => {
   await delFeedbacksApi({ ids: [feedback.id] });
+  ElMessage.success('删除成功');
+  getTableData();
+};
+
+const delSelected = async () => {
+  await delFeedbacksApi({ ids: selections.value.map((item) => item.id) });
   ElMessage.success('删除成功');
   getTableData();
 };
