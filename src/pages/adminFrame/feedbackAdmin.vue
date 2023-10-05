@@ -8,10 +8,11 @@
       :inline="true"
       size="default"
     >
-      <el-form-item label="通知内容">
+      <el-form-item label="反馈内容">
         <el-input
-          v-model="filterFormData.content"
-          placeholder="根据通知内容筛选"
+          v-model="filterFormData.keyword"
+          placeholder="根据反馈内容筛选"
+          @change="getTableData"
         ></el-input>
       </el-form-item>
       <el-form-item>
@@ -28,9 +29,20 @@
       <el-table-column label="操作" fixed="right" width="100" align="center">
         <template #default="{ row }: { row: Feedback }">
           <el-button-group size="small">
-            <el-button type="danger" :icon="Delete" @click="del(row)"
-              >删除</el-button
+            <el-popconfirm
+              title="确定要删除吗？"
+              confirmButtonText="确定"
+              cancelButtonText="取消"
+              confirmButtonType="primary"
+              cancelButtonType="text"
+              @confirm="del(row)"
             >
+              <template #reference
+                ><el-button type="danger" :icon="Delete"
+                  >删除</el-button
+                ></template
+              >
+            </el-popconfirm>
           </el-button-group>
         </template>
       </el-table-column>
@@ -43,8 +55,8 @@
           :background="false"
           layout="total, sizes, prev, pager, next, jumper"
           :total="pageInfo.total"
-          @size-change="pageSizeChange"
-          @current-change="currentPageChange"
+          @size-change="getTableData"
+          @current-change="getTableData"
         />
       </template>
     </el-table>
@@ -56,69 +68,15 @@ import { ref } from 'vue';
 import { Feedback, PageInfo } from '@/typing/common';
 import { Delete } from '@element-plus/icons-vue';
 import PageHeader from '@/components/common/pageHeader.vue';
+import { useRoute } from 'vue-router';
+import {
+  searchFeedbacksApi,
+  delFeedbacksApi,
+} from '@/$http/apis/feedbackAdmin.api';
+import { ElMessage } from 'element-plus';
 
-const testData: Feedback[] = [
-  {
-    id: '1',
-    content: 'This is feedback 1',
-    userId: 'user1',
-    activityId: 'activity1',
-  },
-  {
-    id: '2',
-    content: 'This is feedback 2',
-    userId: 'user2',
-    activityId: 'activity1',
-  },
-  {
-    id: '3',
-    content: 'This is feedback 3',
-    userId: 'user1',
-    activityId: 'activity2',
-  },
-  {
-    id: '4',
-    content: 'This is feedback 4',
-    userId: 'user2',
-    activityId: 'activity2',
-  },
-  {
-    id: '5',
-    content: 'This is feedback 5',
-    userId: 'user1',
-    activityId: 'activity3',
-  },
-  {
-    id: '6',
-    content: 'This is feedback 6',
-    userId: 'user2',
-    activityId: 'activity3',
-  },
-  {
-    id: '7',
-    content: 'This is feedback 7',
-    userId: 'user1',
-    activityId: 'activity4',
-  },
-  {
-    id: '8',
-    content: 'This is feedback 8',
-    userId: 'user2',
-    activityId: 'activity4',
-  },
-  {
-    id: '9',
-    content: 'This is feedback 9',
-    userId: 'user1',
-    activityId: 'activity5',
-  },
-  {
-    id: '10',
-    content: 'This is feedback 10',
-    userId: 'user2',
-    activityId: 'activity5',
-  },
-];
+const route = useRoute();
+const activityId: string | undefined = route.query['activity-id'] as string;
 
 const pageInfo = ref<PageInfo>({
   currentPage: 1,
@@ -126,20 +84,30 @@ const pageInfo = ref<PageInfo>({
   total: 100,
 });
 
-const currentPageChange = () => {
-  console.log('pageChange');
+interface FilterFormData {
+  keyword: string;
+}
+
+const filterFormData = ref<FilterFormData>({ keyword: '' });
+
+const tableData = ref<Feedback[]>([]);
+
+const getTableData = async () => {
+  const res = await searchFeedbacksApi({
+    activityId,
+    page: pageInfo.value.currentPage,
+    pageSize: pageInfo.value.pageSize,
+    keyword: filterFormData.value.keyword,
+  });
+  tableData.value = res.data.records;
+  pageInfo.value.total = res.data.total;
 };
+getTableData();
 
-const pageSizeChange = () => {
-  console.log('pageSize change');
-};
-
-const tableData = ref<Feedback[]>(testData);
-
-const filterFormData = ref<Partial<Feedback>>({});
-
-const del = (registration: Feedback) => {
-  console.log('del', registration);
+const del = async (feedback: Feedback) => {
+  await delFeedbacksApi({ ids: [feedback.id] });
+  ElMessage.success('删除成功');
+  getTableData();
 };
 </script>
 

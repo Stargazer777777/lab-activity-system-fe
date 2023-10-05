@@ -56,3 +56,11 @@ export const editActivityApi = (body: {
     data: body,
   });
 };
+
+export const delActivityApi = (query: { id: string }) => {
+  return NestHttpTool.send({
+    method: 'DELETE',
+    url: '/activity-admin/del',
+    params: query,
+  });
+};

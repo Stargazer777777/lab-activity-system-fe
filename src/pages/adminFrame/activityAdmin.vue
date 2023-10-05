@@ -85,9 +85,21 @@
             <el-button type="primary" :icon="Edit" @click="toEditActivity(row)"
               >编辑</el-button
             >
-            <el-button type="danger" :icon="Delete" @click="del(row)"
-              >删除</el-button
+            <el-popconfirm
+              title="确定要删除吗？"
+              confirmButtonText="确定"
+              cancelButtonText="取消"
+              confirmButtonType="primary"
+              cancelButtonType="text"
+              @confirm="del(row)"
             >
+              <template #reference
+                ><el-button type="danger" :icon="Delete"
+                  >删除</el-button
+                ></template
+              >
+            </el-popconfirm>
+
             <el-button type="primary" :icon="PieChart" @click="toFeedback(row)"
               >查看反馈</el-button
             >
@@ -132,7 +144,11 @@ import {
   Plus,
 } from '@element-plus/icons-vue';
 import router from '@/router/index';
-import { searchActivitiesApi } from '@/$http/apis/activityAdmin.api';
+import {
+  delActivityApi,
+  searchActivitiesApi,
+} from '@/$http/apis/activityAdmin.api';
+import { ElMessage } from 'element-plus';
 
 const pageInfo = ref<PageInfo>({
   currentPage: 1,
@@ -220,8 +236,10 @@ const toEditActivity = (activity: Activity) => {
     query: { 'activity-id': activity.id },
   });
 };
-const del = (activity: Activity) => {
-  console.log('del', activity);
+const del = async (activity: Activity) => {
+  await delActivityApi({ id: activity.id });
+  ElMessage.success('删除成功');
+  getTableData();
 };
 </script>
 

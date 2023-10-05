@@ -1,3 +1,4 @@
+import router from '@/router';
 import axios, { AxiosError } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import { ElMessage } from 'element-plus';
@@ -61,6 +62,9 @@ class HttpTool {
     }
 
     switch (statusCode) {
+      case 401:
+        router.push('/userLogin');
+        break;
       default:
         break;
     }

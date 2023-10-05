@@ -25,6 +25,7 @@ import { onBeforeUnmount, ref, shallowRef } from 'vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 import { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor';
 import { watch } from 'vue';
+import { uploadApi } from '@/$http/apis/file.api';
 
 interface Props {
   modelValue?: string;
@@ -52,8 +53,27 @@ watch(
   }
 );
 
+type InsertImgFn = (url: string, alt: string, href: string) => void;
+type InsertVideoFn = (url: string, poster: string) => void;
+
 const toolbarConfig: Partial<IToolbarConfig> = {};
-const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...' };
+const editorConfig: Partial<IEditorConfig> = {
+  placeholder: '请输入内容...',
+  MENU_CONF: {
+    uploadImage: {
+      async customUpload(file: File, insertFn: InsertImgFn) {
+        const res = await uploadApi(file);
+        insertFn(res.data, file.name, res.data);
+      },
+    },
+    uploadVideo: {
+      async customUpload(file: File, insertFn: InsertVideoFn) {
+        const res = await uploadApi(file);
+        insertFn(res.data, '');
+      },
+    },
+  },
+};
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {
