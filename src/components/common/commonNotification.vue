@@ -68,9 +68,17 @@ const userInformations = ref<userBaseInfo[]>([]);
 const getUserIdsByActivityId = async () => {
   const res = await getUserNameAndIdByActivityId({
     activityId: notificationStore.activityId,
+    selectAll: notificationStore.selectAllUser,
   });
   userInformations.value = res.data;
-  console.log(userInformations.value);
+  // 如果选择了全选，那么将结果放在localStore里面，表示选中
+  console.log('ee');
+  if (notificationStore.selectAllUser === true) {
+    console.log('ere');
+    notificationStore.userIds = userInformations.value.map(
+      (user) => user.userId
+    );
+  }
 };
 // 添加通知的数据载体
 const userNotification = reactive<AddNoticifaction>({
@@ -84,6 +92,12 @@ const userNotification = reactive<AddNoticifaction>({
 const addNotifucation = async () => {
   userNotification.userIds = notificationStore.userIds; //store里面的用户id就代表需要发送的用户列表，传给后端
   userNotification.activityId = notificationStore.activityId; //store里面的活动id，传给后端
+  //校验数据--------
+  const validateNtf = await validateNotification();
+  if (validateNtf === false) {
+    console.log('1232');
+    return;
+  }
   const res = await adminAddNoticifaction(userNotification);
   if (res.success === true) {
     // 成功创建
@@ -95,6 +109,27 @@ const addNotifucation = async () => {
     notificationStore.visiable = false;
   }
   console.log(userNotification);
+};
+const validateNotification = async () => {
+  if (userNotification.userIds.length === 0) {
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '通知的用户不能为空';
+    ElMessage(warnMessageDetail.value);
+    return false;
+  }
+  if (userNotification.detail === '') {
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '通知的内容不能为空';
+    ElMessage(warnMessageDetail.value);
+    return false;
+  }
+  if (userNotification.title === '') {
+    warnMessageDetail.value.type = 'error';
+    warnMessageDetail.value.message = '通知的标题不能为空';
+    ElMessage(warnMessageDetail.value);
+    return false;
+  }
+  return true;
 };
 //--------消息提示开始
 const warnMessageDetail = ref<MessageOptions>({});

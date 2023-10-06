@@ -15,7 +15,7 @@ import CommonNotification from '@/components/common/commonNotification.vue';
 import { useNotificationStore } from '@/stores/modules/notificationStore';
 const openTest = () => {
   const notificationStore = useNotificationStore();
-  notificationStore.openNotificationWithActivity('-1', ['1', '2', '3', '4']);
+  notificationStore.open(['1', '3', '4'], true, '-1');
 };
 </script>
 
