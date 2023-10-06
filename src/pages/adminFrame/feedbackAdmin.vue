@@ -7,11 +7,13 @@
       label-width="80px"
       :inline="true"
       size="default"
+      @submit.prevent
     >
       <el-form-item label="反馈内容">
         <el-input
           v-model="filterFormData.keyword"
           placeholder="根据反馈内容筛选"
+          clearable
           @change="getTableData"
         ></el-input>
       </el-form-item>
@@ -22,7 +24,7 @@
           cancelButtonText="取消"
           confirmButtonType="primary"
           cancelButtonType="text"
-          @confirm="delSelected"
+          @confirm="del(selections)"
         >
           <template #reference>
             <el-button
@@ -54,7 +56,7 @@
               cancelButtonText="取消"
               confirmButtonType="primary"
               cancelButtonType="text"
-              @confirm="del(row)"
+              @confirm="del([row])"
             >
               <template #reference
                 ><el-button type="danger" :icon="Delete"
@@ -129,14 +131,8 @@ const tableSelectHandler = (rows: Feedback[]) => {
   selections.value = rows;
 };
 
-const del = async (feedback: Feedback) => {
-  await delFeedbacksApi({ ids: [feedback.id] });
-  ElMessage.success('删除成功');
-  getTableData();
-};
-
-const delSelected = async () => {
-  await delFeedbacksApi({ ids: selections.value.map((item) => item.id) });
+const del = async (feedbacks: Feedback[]) => {
+  await delFeedbacksApi({ ids: feedbacks.map((item) => item.id) });
   ElMessage.success('删除成功');
   getTableData();
 };

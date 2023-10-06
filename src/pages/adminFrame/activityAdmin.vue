@@ -20,10 +20,16 @@
         <el-input
           v-model="filterFormData.keyword"
           placeholder="筛选活动"
+          clearable
+          @change="getTableData"
         ></el-input>
       </el-form-item>
       <el-form-item label="活动状态" label-width="80">
-        <el-select v-model="filterFormData.status" filterable>
+        <el-select
+          v-model="filterFormData.status"
+          filterable
+          @change="getTableData"
+        >
           <el-option
             v-for="item in activityStatusOptions"
             :key="item.value"
