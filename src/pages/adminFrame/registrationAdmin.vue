@@ -33,6 +33,7 @@
             type="primary"
             size="default"
             :disabled="!selections.length"
+            @click="notify(selections)"
             >通知已选择的</el-button
           >
           <el-popconfirm
@@ -76,7 +77,10 @@
       <el-table-column label="操作" fixed="right" width="200" align="center">
         <template #default="{ row }: { row: Registration }">
           <el-button-group size="small">
-            <el-button type="primary" :icon="Notification" @click="notify(row)"
+            <el-button
+              type="primary"
+              :icon="Notification"
+              @click="notify([row])"
               >通知</el-button
             >
             <el-popconfirm
@@ -124,6 +128,7 @@ import {
 } from '@/$http/apis/registrationAdmin.api';
 import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
+import { useNotificationStore } from '@/stores/modules/notificationStore';
 
 const route = useRoute();
 const activityId: string | undefined = route.query['activity-id'] as string;
@@ -169,8 +174,14 @@ const kickout = async (registrations: Registration[]) => {
   getTableData();
 };
 
-const notify = (registration: Registration) => {
-  console.log('to notify', registration);
+const notificationStore = useNotificationStore();
+
+const notify = (registrations: Registration[]) => {
+  notificationStore.open(
+    registrations.map((item) => item.user.id),
+    false,
+    activityId
+  );
 };
 </script>
 
