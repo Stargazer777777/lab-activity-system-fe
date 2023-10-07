@@ -21,8 +21,8 @@ const router = createRouter({
           component: () => import('@/pages/adminFrame/activityAdmin.vue'),
         },
         {
-          path: 'add-activity',
-          component: () => import('@/pages/adminFrame/addActivity.vue'),
+          path: 'add-edit-activity',
+          component: () => import('@/pages/adminFrame/addOrEditActivity.vue'),
         },
         {
           path: 'registration',

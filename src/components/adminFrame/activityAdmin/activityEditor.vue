@@ -21,9 +21,18 @@
 </template>
 
 <script lang="ts" setup>
-import { onBeforeUnmount, ref, shallowRef, onMounted } from 'vue';
+import { onBeforeUnmount, ref, shallowRef } from 'vue';
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue';
 import { IToolbarConfig, IEditorConfig, IDomEditor } from '@wangeditor/editor';
+import { watch } from 'vue';
+import { uploadApi } from '@/$http/apis/file.api';
+
+interface Props {
+  modelValue?: string;
+}
+const props = defineProps<Props>();
+
+const emits = defineEmits(['update:modelValue']);
 
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef();
@@ -31,17 +40,40 @@ const editorRef = shallowRef();
 const mode = ref('default');
 
 // 内容 HTML
-const valueHtml = ref('<p>hello</p>');
+const valueHtml = ref(props.modelValue);
+watch(
+  () => props.modelValue,
+  (val) => (valueHtml.value = val)
+);
 
-// 模拟 ajax 异步获取内容
-onMounted(() => {
-  setTimeout(() => {
-    valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>';
-  }, 1500);
-});
+watch(
+  () => valueHtml.value,
+  (newVal) => {
+    emits('update:modelValue', newVal);
+  }
+);
+
+type InsertImgFn = (url: string, alt: string, href: string) => void;
+type InsertVideoFn = (url: string, poster: string) => void;
 
 const toolbarConfig: Partial<IToolbarConfig> = {};
-const editorConfig: Partial<IEditorConfig> = { placeholder: '请输入内容...' };
+const editorConfig: Partial<IEditorConfig> = {
+  placeholder: '请输入内容...',
+  MENU_CONF: {
+    uploadImage: {
+      async customUpload(file: File, insertFn: InsertImgFn) {
+        const res = await uploadApi(file);
+        insertFn(res.data, file.name, res.data);
+      },
+    },
+    uploadVideo: {
+      async customUpload(file: File, insertFn: InsertVideoFn) {
+        const res = await uploadApi(file);
+        insertFn(res.data, '');
+      },
+    },
+  },
+};
 
 // 组件销毁时，也及时销毁编辑器
 onBeforeUnmount(() => {

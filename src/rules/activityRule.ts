@@ -42,4 +42,6 @@ export const activityRule: FormRules = {
       message: '活动人数限制必须是整数',
     },
   ],
+  startTime: [{ required: true, message: '开始时间必填' }],
+  endTime: [{ required: true, message: '结束时间必填' }],
 };

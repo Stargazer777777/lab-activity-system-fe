@@ -1,3 +1,14 @@
+export interface User {
+  id: string;
+  stuNo: string;
+  email: string;
+  name: string;
+  password: string;
+  sex: 1 | 0;
+  avatarUrl: string;
+  role: string;
+  status: string;
+}
 export interface Activity {
   id: string;
   title: string;
@@ -7,10 +18,10 @@ export interface Activity {
   locationLat: number;
   limitRegistration: number;
   likeNumber: number;
-  startTime: number;
-  endTime: number;
-  createTime: number;
-  updateTime: number;
+  startTime: Date;
+  endTime: Date;
+  createTime: Date;
+  updateTime: Date;
 }
 
 export interface PageInfo {
@@ -37,12 +48,8 @@ export interface AddNoticifaction {
 }
 export interface Registration {
   id: string;
-  userId: string;
-  stuNo: string;
-  username: string;
-  sex: 0 | 1;
-  activityId: string;
-  isCheckIn: boolean;
+  isCheckin: 1 | 0;
+  user: User;
 }
 
 export interface Feedback {
