@@ -155,6 +155,7 @@ import {
   searchActivitiesApi,
 } from '@/$http/apis/activityAdmin.api';
 import { ElMessage } from 'element-plus';
+import { useNotificationStore } from '@/stores/modules/notificationStore';
 
 const pageInfo = ref<PageInfo>({
   currentPage: 1,
@@ -233,8 +234,11 @@ const toRegistrationAdmin = (activity: Activity) => {
     query: { 'activity-id': activity.id },
   });
 };
+
+const notificationStore = useNotificationStore();
+
 const notify = (activity: Activity) => {
-  console.log('to notify', activity);
+  notificationStore.open([], true, activity.id);
 };
 const toEditActivity = (activity: Activity) => {
   router.push({

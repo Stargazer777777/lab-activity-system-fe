@@ -35,7 +35,7 @@ const addCircle = (map: AMap.Map, position: AMap.LngLat) => {
   }
   circle = new AMap.Circle({
     center: position, // 圆心位置
-    radius: 20, // 圆半径
+    radius: import.meta.env.locationRadius, // 圆半径
     fillColor: '#ff000099', // 圆形填充颜色
     strokeColor: '#fff', // 描边颜色
     strokeWeight: 2, // 描边宽度
@@ -87,6 +87,12 @@ onUnmounted(() => {
   if (mapInstance) {
     mapInstance.off('click', handleClickMap);
   }
+});
+
+defineExpose({
+  initCircle(lng: number, lat: number) {
+    addCircle(mapInstance as AMap.Map, new AMap.LngLat(lng, lat));
+  },
 });
 </script>
 

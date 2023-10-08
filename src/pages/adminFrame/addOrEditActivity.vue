@@ -53,7 +53,6 @@
               range-separator="到"
               start-placeholder="开始时间"
               end-placeholder="结束时间"
-              :disabled-date="(date:Date)=>date.getTime()<=new Date().getTime()"
             />
           </el-form-item>
           <el-form-item>
@@ -69,7 +68,7 @@
             </div>
           </el-form-item>
         </el-form>
-        <ActivityMap @on-select-position="handleSelectPosition" />
+        <ActivityMap ref="mapRef" @on-select-position="handleSelectPosition" />
       </el-col>
       <el-col :span="12" :offset="0">
         <ActivityEditor v-model="formData.description"
@@ -95,6 +94,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const activityId: string | undefined = route.query['activity-id'] as string;
+const mapRef = ref<InstanceType<typeof ActivityMap>>();
 
 const dateRange = ref<[Date, Date]>([new Date(), new Date()]);
 watch(
@@ -113,6 +113,7 @@ const getActivityById = async (activityId: string) => {
   res.data.locationLong = parseFloat(res.data.locationLong);
   res.data.locationLat = parseFloat(res.data.locationLat);
   formData.value = res.data;
+  mapRef.value?.initCircle(res.data.locationLong, res.data.locationLat);
 };
 if (activityId) {
   getActivityById(activityId);
