@@ -1,5 +1,6 @@
 import { FormRules } from 'element-plus';
 
+// 活动相关的表单校验规则
 export const activityRule: FormRules = {
   title: [
     {

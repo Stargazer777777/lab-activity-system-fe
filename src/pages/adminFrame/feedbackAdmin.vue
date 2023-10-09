@@ -1,6 +1,9 @@
 <template>
   <div>
+    <!-- 页面头部 -->
     <PageHeader title="反馈管理" />
+
+    <!-- 反馈筛选表单 -->
     <el-form
       :model="filterFormData"
       ref="filterFormRef"
@@ -10,6 +13,7 @@
       @submit.prevent
     >
       <el-form-item label="反馈内容">
+        <!-- 反馈内容输入框 -->
         <el-input
           v-model="filterFormData.keyword"
           placeholder="根据反馈内容筛选"
@@ -18,6 +22,7 @@
         ></el-input>
       </el-form-item>
       <el-form-item>
+        <!-- 删除已选择按钮 -->
         <el-popconfirm
           title="确定要删除吗？"
           confirmButtonText="确定"
@@ -38,18 +43,24 @@
       </el-form-item>
     </el-form>
 
+    <!-- 反馈列表 -->
     <el-table
       :data="tableData"
       border
       stripe
       @selection-change="tableSelectHandler"
     >
+      <!-- 选择列 -->
       <el-table-column type="selection" width="50" />
+      <!-- 序号列 -->
       <el-table-column type="index" width="50" />
+      <!-- 内容列 -->
       <el-table-column label="内容" prop="content" min-width="200" />
+      <!-- 操作列 -->
       <el-table-column label="操作" fixed="right" width="100" align="center">
         <template #default="{ row }: { row: Feedback }">
           <el-button-group size="small">
+            <!-- 删除按钮 -->
             <el-popconfirm
               title="确定要删除吗？"
               confirmButtonText="确定"
@@ -67,6 +78,7 @@
           </el-button-group>
         </template>
       </el-table-column>
+      <!-- 分页器 -->
       <template #append>
         <el-pagination
           v-model:current-page="pageInfo.currentPage"
@@ -113,6 +125,7 @@ const filterFormData = ref<FilterFormData>({ keyword: '' });
 
 const tableData = ref<Feedback[]>([]);
 
+// 获取表格数据
 const getTableData = async () => {
   const res = await searchFeedbacksApi({
     activityId,
@@ -127,10 +140,12 @@ getTableData();
 
 const selections = ref<Feedback[]>([]);
 
+// 表格选择事件处理函数
 const tableSelectHandler = (rows: Feedback[]) => {
   selections.value = rows;
 };
 
+// 删除反馈
 const del = async (feedbacks: Feedback[]) => {
   await delFeedbacksApi({ ids: feedbacks.map((item) => item.id) });
   ElMessage.success('删除成功');

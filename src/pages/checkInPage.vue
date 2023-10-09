@@ -1,12 +1,15 @@
 <template>
   <div class="container">
+    <!-- CheckInMap组件，用于展示活动地点的地图 -->
     <CheckInMap
       ref="mapRef"
       class="map part part1"
       :location="activityLocation"
     />
     <div class="part part2">
+      <!-- 活动信息展示 -->
       <el-descriptions title="活动信息" :column="1" size="large" border>
+        <!-- 活动名称 -->
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
@@ -18,6 +21,7 @@
           </template>
           {{ activityInfo?.title }}
         </el-descriptions-item>
+        <!-- 活动地点 -->
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
@@ -29,6 +33,7 @@
           </template>
           {{ activityInfo?.locationName }}
         </el-descriptions-item>
+        <!-- 开始时间 -->
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
@@ -40,6 +45,7 @@
           </template>
           {{ formatDate(activityInfo?.startTime) }}
         </el-descriptions-item>
+        <!-- 结束时间 -->
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
@@ -52,6 +58,7 @@
           {{ formatDate(activityInfo?.endTime) }}
         </el-descriptions-item>
       </el-descriptions>
+      <!-- 点击签到按钮 -->
       <el-button
         class="btn"
         type="primary"
@@ -78,15 +85,20 @@ import { checkInApi } from '@/$http/apis/checkIn.api';
 import { ElMessage } from 'element-plus';
 import router from '@/router';
 
+// 获取当前路由
 const route = useRoute();
+// 获取活动id
 const activityId: string | undefined =
   (route.query['activity-id'] as string) ||
   '36733723-a76c-49bf-903c-20124f594b53';
 
+// 活动信息
 const activityInfo = ref<Activity>();
 
+// 地图组件引用
 const mapRef = ref<InstanceType<typeof CheckInMap>>();
 
+// 计算属性，根据活动信息获取活动地点的经纬度
 const activityLocation = computed(() => {
   if (activityInfo.value) {
     return {
@@ -97,32 +109,40 @@ const activityLocation = computed(() => {
   return undefined;
 });
 
+// 获取活动信息
 const getActivityInfo = async () => {
   const res = await getActivityByIdApi({ id: activityId });
   activityInfo.value = res.data;
 };
 getActivityInfo();
 
+// 格式化日期
 const formatDate = (date: Date | undefined) => {
   return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 };
 
+// 签到loading状态
 const checkInLoading = ref(false);
 
+// 签到函数
 const checkIn = async () => {
   checkInLoading.value = true;
   if (!mapRef.value) {
     return;
   }
   try {
+    // 获取当前位置
     const currentLocation = await mapRef.value.getLocation();
 
+    // 发起签到请求
     await checkInApi({
       activityId: activityId,
       locationLong: currentLocation.lng,
       locationLat: currentLocation.lat,
     });
+    // 签到成功提示
     ElMessage.success('签到成功');
+    // 500ms后返回上一页
     setTimeout(() => {
       router.back();
     }, 500);
