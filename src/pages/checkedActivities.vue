@@ -224,10 +224,6 @@ const comment = () => {
   commonlayout.value = false;
 };
 
-const getActivityId = (activityId) => {
-  // console.log(activityId);
-  return activityId;
-};
 const closecommentwindow = () => {
   commentref.value = false;
   commonlayout.value = true;
@@ -251,12 +247,18 @@ onMounted(() => {
   getUsermsg();
   getcheckedActivities();
 });
+
+const id1 = ref();
+const getActivityId = (activityId) => {
+  id1.value = activityId;
+  console.log(id1.value);
+};
 const docomment = async () => {
-  const activityId = getActivityId();
-  console.log(activityId);
+  // console.log(input.value);
+  // console.log(scored.value);
   const res = await docommentApi(
-    { id: activityId },
-    { content: input, mark: scored }
+    { a_id: id1.value },
+    { content: input.value, mark: Number(scored.value) }
   );
   if (res) {
     alert('提交评价成功！感谢您的评价~😆');
