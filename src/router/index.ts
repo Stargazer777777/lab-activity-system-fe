@@ -46,6 +46,18 @@ const router = createRouter({
       path: '/check-in',
       component: () => import('@/pages/checkInPage.vue'),
     },
+    {
+      path: '/userCheckmsg',
+      component: () => import('@/pages/userCheckmsg.vue'),
+    },
+    {
+      path: '/signedActivities',
+      component: () => import('@/pages/signedActivities.vue'),
+    },
+    {
+      path: '/checkedActivities',
+      component: () => import('@/pages/checkedActivities.vue'),
+    },
   ],
 });
 
