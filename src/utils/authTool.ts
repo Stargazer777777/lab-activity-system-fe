@@ -1,4 +1,4 @@
-interface AuthToolI {
+export interface AuthToolI {
   /**
    * 授权，应该将token绑定在JavaHttpTool的默认请求头上，并将token保存在localstorage
    * @param token
@@ -16,3 +16,26 @@ interface AuthToolI {
    */
   removeAutorization: () => void;
 }
+import { JavaHttpTool, NestHttpTool } from '@/$http/index';
+export class AuthToolImpl implements AuthToolI {
+  setAuthrization(token: string) {
+    localStorage.setItem('Authorization', token);
+    JavaHttpTool.setAuthorization(token);
+    NestHttpTool.setAuthorization(token);
+  }
+  authFromLocal() {
+    const token = localStorage.getItem('Authorization');
+    if (token == null || token === '') {
+      return false;
+    }
+    this.setAuthrization(token);
+    return true;
+  }
+  removeAutorization() {
+    JavaHttpTool.removeAuthorization();
+    NestHttpTool.removeAuthorization();
+    localStorage.removeItem('Authorization');
+  }
+}
+
+export const AuthTool = new AuthToolImpl();

@@ -4,11 +4,19 @@
     <div class="container">
       <RouterView />
     </div>
+    <commonNotification />
   </div>
+  <div><button @click="openTest">www</button></div>
 </template>
 
 <script lang="ts" setup>
 import AdminMenu from '@/components/adminFrame/adminMenu.vue';
+import CommonNotification from '@/components/common/commonNotification.vue';
+import { useNotificationStore } from '@/stores/modules/notificationStore';
+const openTest = () => {
+  const notificationStore = useNotificationStore();
+  notificationStore.open(['1', '3', '4'], true, '-1');
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,9 +1,11 @@
+import router from '@/router';
 import axios, { AxiosError } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import { ElMessage } from 'element-plus';
 
 export interface BkResponse {
-  data: object;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
   msg: string;
   success: boolean;
 }
@@ -19,21 +21,35 @@ export interface HttpOption {
 export class BkError extends Error {
   constructor(bkErrorResponse: BkErrorResponse) {
     super();
-    super.stack = 'BkError';
-    super.message = bkErrorResponse.msg;
+    super.name = 'BkError';
+    super.message = bkErrorResponse.msg || 'Unknown error';
     super.cause = bkErrorResponse.detail;
   }
 }
 
-export class JavaHttpTool {
-  private static httpInstance = axios.create();
+class HttpTool {
+  protected httpInstance = axios.create();
 
-  static setBaseUrl(baseUrl: string) {
-    JavaHttpTool.httpInstance.defaults.baseURL = baseUrl;
+  constructor(baseUrl?: string) {
+    if (baseUrl) {
+      this.setBaseUrl(baseUrl);
+    }
   }
 
-  private static errHandler(err: AxiosError, httpOption?: HttpOption) {
-    const statusCode = err.status;
+  setBaseUrl(baseUrl: string) {
+    this.httpInstance.defaults.baseURL = baseUrl;
+  }
+
+  setAuthorization(Authorization: string) {
+    this.httpInstance.defaults.headers.common['Authorization'] = Authorization;
+  }
+
+  removeAuthorization() {
+    delete this.httpInstance.defaults.headers.common['Authorization'];
+  }
+
+  protected errHandler(err: AxiosError, httpOption?: HttpOption) {
+    const statusCode = err.response?.status;
 
     let errMsg = '未知错误';
 
@@ -42,10 +58,13 @@ export class JavaHttpTool {
     if (err.response?.data) {
       const errResponse = err.response.data as BkErrorResponse;
       bkError = new BkError(errResponse);
-      errMsg = errResponse.msg;
+      errMsg = errResponse.msg || '未知错误';
     }
 
     switch (statusCode) {
+      case 401:
+        router.push('/userLogin');
+        break;
       default:
         break;
     }
@@ -56,16 +75,16 @@ export class JavaHttpTool {
     throw bkError;
   }
 
-  static async send(
+  async send(
     config: AxiosRequestConfig,
     httpOption?: HttpOption
   ): Promise<BkResponse> {
     try {
-      const axiosResponse = await JavaHttpTool.httpInstance<BkResponse>(config);
+      const axiosResponse = await this.httpInstance<BkResponse>(config);
       return axiosResponse.data as BkResponse;
     } catch (err) {
       if (err instanceof AxiosError) {
-        throw JavaHttpTool.errHandler(err, httpOption);
+        throw this.errHandler(err, httpOption);
       } else {
         throw err;
       }
@@ -73,4 +92,6 @@ export class JavaHttpTool {
   }
 }
 
-JavaHttpTool.setBaseUrl(import.meta.env['JAVA_HTTP_BASE']);
+export const JavaHttpTool = new HttpTool(import.meta.env['JAVA_HTTP_BASE']);
+
+export const NestHttpTool = new HttpTool(import.meta.env['NEST_HTTP_BASE']);

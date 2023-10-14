@@ -4,11 +4,7 @@ interface DevWebpackConfig extends webpack.Configuration {
   devServer?: any;
 }
 
-import YAML from 'yamljs';
-
 export default (): DevWebpackConfig => {
-  const devConfig = YAML.load(path.resolve('./.env.dev.yaml')) || {};
-  devConfig.mode = 'development';
   return {
     extends: ['webpack.common.ts'],
     mode: 'development',
@@ -26,18 +22,28 @@ export default (): DevWebpackConfig => {
         reconnect: true,
       },
       proxy: {
-        '/javaApi': {
+        '/javaDevApi': {
           target: 'http://localhost:30000',
-          pathRewrite: { '^/javaApi': '' },
+          pathRewrite: { '^/javaDevApi': '' },
+          secure: false,
+        },
+        '/nestDevApi': {
+          target: 'http://localhost:3000',
+          pathRewrite: { '^/nestDevApi': '' },
+          secure: false,
+        },
+        '/javaProdApi': {
+          target: 'http://124.220.92.234:30000',
+          pathRewrite: { '^/javaProdApi': '' },
+          secure: false,
+        },
+        '/nestProdApi': {
+          target: 'http://150.158.18.90:30006',
+          pathRewrite: { '^/nestProdApi': '' },
           secure: false,
         },
       },
     },
-    plugins: [
-      new webpack.DefinePlugin({
-        'import.meta.env': JSON.stringify(devConfig),
-      }),
-    ],
     module: {
       rules: [
         // sass/css
