@@ -7,7 +7,7 @@ export const checkedActivitiesApi = () => {
 };
 
 export const docommentApi = (
-  query: { id: string },
+  query: { a_id: string },
   body: { content: string; mark: number }
 ) => {
   return JavaHttpTool.send({
