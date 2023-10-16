@@ -68,11 +68,15 @@
     "axios": "^1.5.1",
     "core-js": "^3.31.1",
     "dayjs": "^1.11.10",
+    "easy-danmaku-js": "^1.0.7",
+    "echarts": "^5.4.3",
     "element-plus": "^2.3.14",
+    "file-saver": "^2.0.5",
     "pinia": "^2.1.4",
     "vite-plugin-optimize-persist": "^0.1.2",
     "vite-plugin-package-config": "^0.1.1",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.3"
+    "vue-router": "^4.2.3",
+    "xlsx": "^0.17.0"
   }
 }

@@ -32,6 +32,10 @@ const router = createRouter({
           path: 'feedback',
           component: () => import('@/pages/adminFrame/feedbackAdmin.vue'),
         },
+        {
+          path: 'statistic',
+          component: () => import('@/pages/adminFrame/statisticAdmin.vue'),
+        },
       ],
     },
     {
