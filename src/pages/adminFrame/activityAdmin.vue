@@ -240,7 +240,10 @@ const toDetail = (activity: Activity) => {
 
 // 跳转到活动统计页面
 const toStatistics = (activity: Activity) => {
-  console.log('to statistics', activity);
+  router.push({
+    path: '/admin/statistic',
+    query: { 'activity-id': activity.id },
+  });
 };
 
 // 跳转到活动反馈页面
