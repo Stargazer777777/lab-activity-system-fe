@@ -116,7 +116,10 @@
                 >
                 <div class="grid-content ep-bg-purple"
               /></el-col>
-              <el-col :span="1" style="margin-top: 30px"
+              <el-col
+                :span="1"
+                style="margin-top: 30px"
+                @click="toNotification()"
                 ><el-icon><Bell /></el-icon>
                 <div class="grid-content ep-bg-purple"
               /></el-col>
@@ -218,6 +221,9 @@ const getcheckedActivities = async () => {
   const res = await checkedActivitiesApi();
   activities.value = res.data;
   // console.log(activities.value[0].title);
+  if (activities.value == null) {
+    alert('你还没有已签到的活动，快去签到吧');
+  }
 };
 const comment = () => {
   commentref.value = true;
@@ -234,7 +240,7 @@ const closecommentwindow = () => {
 };
 const getUsermsg = async () => {
   const user1 = await getUsermsgApi();
-  //   console.log(user1);
+  console.log(user1.data.avatarUrl);
   avatar.value = user1.data.avatarUrl;
   uname.value = user1.data.name;
   stuNo.value = user1.data.stuNo;
@@ -270,7 +276,9 @@ const gohome = () => {
 const gotosignedActivities = () => {
   router.push({ path: '/signedActivities' });
 };
-
+const toNotification = () => {
+  router.push({ path: '/checkNotifications' });
+};
 const toself = () => {
   router.push({ path: '/userCheckmsg' });
 };
@@ -304,7 +312,8 @@ ul li {
   display: block;
   height: 140px;
   width: 600px;
-  background-color: lightblue;
+  /* background-color: lightblue; */
+  background-color: rgb(213, 227, 231);
   margin: 5px;
 }
 p {

@@ -13,6 +13,7 @@ export const editUsermsgApi = (body: {
   password: string;
   name: string;
   sex: number;
+  avatarUrl: string;
 }) => {
   return JavaHttpTool.send({
     method: 'PUT',
