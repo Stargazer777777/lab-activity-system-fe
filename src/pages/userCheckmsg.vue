@@ -1,5 +1,45 @@
 <template>
-  <div class="common-layout" ref="mainref">
+  <div v-if="upnew"></div>
+  <div class="changeavatarwindow" v-if="change1">
+    <el-button
+      circle
+      class="closeavatarchangewindow"
+      @click="
+        change1 = !change1;
+        showmainwindow = !showmainwindow;
+      "
+      >×</el-button
+    >
+    <span style="font-weight: bold; font-size: 25px; line-height: 70px"
+      >修改头像</span
+    >
+
+    <el-upload
+      ref="upload"
+      :auto-upload="false"
+      @change="toavatar"
+      :show-file-list="false"
+    >
+      <template #trigger>
+        <div
+          style="
+            border: 1px dashed #000;
+            height: 250px;
+            width: 600px;
+            background-color: whitesmoke;
+            /* line-height: 60px; */
+            margin-top: 100px;
+          "
+        >
+          <span style="position: absolute; bottom: 110px; left: 230px"
+            >+ <br />
+            请上传你的新头像</span
+          >
+        </div>
+      </template>
+    </el-upload>
+  </div>
+  <div class="common-layout" ref="mainref" v-if="showmainwindow">
     <el-container>
       <el-header class="myheader">
         <el-row :gutter="20">
@@ -7,14 +47,14 @@
             ><img @click="gohome" class="logooo" :src="logo" />
             <div class="grid-content ep-bg-purple"
           /></el-col>
-          <el-col :span="1" style="margin-top: 30px"
+          <el-col :span="1" style="margin-top: 30px" @click="toNotification()"
             ><el-icon><Bell /></el-icon>
             <div class="grid-content ep-bg-purple"
           /></el-col>
           <el-col :span="3">
             <div style="margin-top: 16px">
               <el-avatar
-                src="{{avatar}}"
+                :src="avatarUrl"
                 style="height: 40px; width: 40px"
                 alt="头像"
               />
@@ -27,9 +67,10 @@
         <el-aside width="200px" class="aside">
           <div>
             <el-avatar
-              src="{{avatar}}"
+              :src="avatarUrl"
               style="height: 80px; width: 80px"
               alt="头像"
+              @click="showwindow()"
             />
           </div>
           <div>{{ uname }}</div>
@@ -211,9 +252,8 @@
   <button
     class="editclose"
     v-if="editview"
-    @click="(editview = !editview), editchangeback()"
+    @click="(editview = !editview), editchangeback(), getUsermsg()"
   >
-    <!-- 如何解决取消修改框刷新问题，如何上传头像,跳转通知页面-->
     ×
   </button>
 </template>
@@ -228,39 +268,69 @@ import {
   Lock,
   Bell,
 } from '@element-plus/icons-vue';
-import { onMounted } from 'vue';
+// import { created } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUsermsgApi, editUsermsgApi } from '@/$http/apis/userCheckmsg.api';
+import { uploadApi } from '@/$http/apis/file.api';
 import logo from '@/assets/logo.png';
 const uname = ref('');
 const email = ref('');
 const stuNo = ref('');
 const pwd = ref('');
 const gender = ref('');
-const avatar = ref('');
-
+const avatarUrl = ref();
+const change1 = ref(false);
 const uname1 = ref();
 const email1 = ref();
 const stuNO1 = ref();
+const upnew = ref(false);
+const showmainwindow = ref(true);
 const pwd1 = ref();
 const gender1 = ref();
-
+const avatarUrl1 = ref();
+//
+const toavatar = async (elfile) => {
+  const res = await uploadApi(elfile.raw);
+  // console.log(res);
+  if (res.success == true) {
+    // alert('更换头像成功！');
+    // getUsermsg();
+    avatarUrl1.value = res.data;
+    avatarUrl.value = res.data;
+    // console.log(avatarUrl.value + '==>');
+    // console.log(avatarUrl1.value);
+    editpush();
+    showwindow();
+  }
+};
+//
+const toNotification = () => {
+  router.push({ path: '/checkNotifications' });
+};
+const showwindow = () => {
+  change1.value = !change1.value;
+  showmainwindow.value = !showmainwindow.value;
+};
 const getUsermsg = async () => {
   const user1 = await getUsermsgApi();
-  console.log(user1);
+  // console.log(user1.data);
   email.value = user1.data.email;
   stuNo.value = user1.data.stuNo;
   pwd.value = user1.data.password;
   uname.value = user1.data.name;
   gender.value = user1.data.sex;
-  avatar.value = user1.data.avatarUrl;
+  // console.log(user1.data.avatarUrl);
+  avatarUrl.value = user1.data.avatarUrl;
 
-  uname1.value = user1.data.name;
-  email1.value = user1.data.email;
-  stuNO1.value = user1.data.stuNo;
-  pwd1.value = user1.data.password;
-  gender1.value = user1.data.sex;
+  uname1.value = uname.value;
+  email1.value = email.value;
+  stuNO1.value = stuNo.value;
+  pwd1.value = pwd.value;
+  gender1.value = gender.value;
+  // avatarUrl1.value = avatarUrl.value;
 };
+getUsermsg();
+
 //更新用户信息
 const editpush = async () => {
   const flag = await editUsermsgApi({
@@ -269,16 +339,16 @@ const editpush = async () => {
     password: String(pwd1.value),
     name: String(uname1.value),
     sex: Number(gender1.value),
+    avatarUrl: String(avatarUrl1.value),
   });
   if (flag) {
+    // console.log(avatarUrl1.value);
     getUsermsg();
     alert('修改信息成功！🥳');
+    // console.log(avatarUrl.value);
   }
 };
 
-onMounted(() => {
-  getUsermsg();
-});
 const editview = ref(false);
 const mainref = ref();
 // console.dir(axios);
@@ -304,6 +374,21 @@ const gohome = () => {
   width: 66px;
   height: 66px;
   margin-left: 20px;
+}
+
+.changeavatarwindow {
+  background-color: lightgray;
+  width: 600px;
+  height: 500px;
+  /* position: absolute; */
+  margin: 100px auto;
+  text-align: center;
+}
+.closeavatarchangewindow {
+  position: absolute;
+  top: 1px;
+  left: 565px;
+  padding: 5px;
 }
 .edit {
   height: 500px;

@@ -2,8 +2,8 @@
   <div class="common-layout">
     <el-container>
       <!-- <el-header class="myheader">
-        
-      </el-header> -->
+          
+        </el-header> -->
       <el-header class="myheader1">
         <el-row :gutter="20">
           <el-col :span="2"
@@ -60,55 +60,46 @@
           /></el-col>
         </el-row>
       </el-header>
+      <el-row>
+        <el-col :span="14" style="padding-left: 385px"
+          ><el-icon><Comment /></el-icon> <el-text tag="b">我的通知</el-text>
+          <div class="grid-content ep-bg-purple"
+        /></el-col>
+        <el-col :span="10"
+          ><div class="mt-4">
+            <el-input
+              v-model="input"
+              placeholder="请输入关键词搜索通知"
+              class="input-with-select"
+            >
+              <template #prepend>
+                <el-button :icon="Search" @click="searchNotification()" />
+              </template>
+            </el-input>
+          </div>
+          <div class="grid-content ep-bg-purple-light"
+        /></el-col>
+      </el-row>
+
       <hr class="hr1" />
       <el-container class="mybody">
-        <el-aside width="200px" class="aside">
-          <div
-            style="
-              /* background-color: lightgray; */
-              height: 40px;
-              width: 120px;
-              margin: 6px;
-              text-align: center;
-              line-height: 40px;
-            "
-          >
-            <el-button style="padding: 13px" @click="gotocheckedActivities"
-              ><el-icon><Select /></el-icon> 已参与活动</el-button
-            >
-          </div>
-          <div
-            style="
-              /* background-color: lightblue; */
-              height: 40px;
-              width: 120px;
-              margin: 6px;
-              text-align: center;
-              line-height: 40px;
-            "
-          >
-            <el-button
-              style="
-                padding: 13px;
-                background-color: rgb(236, 245, 255);
-                color: rgb(64, 182, 255);
-              "
-              ><el-icon><Edit /></el-icon> 已报名活动</el-button
-            >
-          </div>
-        </el-aside>
+        <el-aside width="200px" class="aside"> </el-aside>
         <el-main>
           <ul>
-            <li v-for="item in activities" :key="item.id">
+            <li v-for="item in notifications" :key="item.id">
               <p>{{ item.title }}</p>
-              <el-button type="info" round class="mainbutton1" @click="gosignin"
-                >点击签到</el-button
-              ><el-button
+              <!-- <br> -->
+              <span style="padding-top: 20px; padding-left: 25px">{{
+                item.detail
+              }}</span>
+              <!-- <el-button type="info" round class="mainbutton1">详情</el-button
+              > -->
+              <el-button
                 type="info"
                 round
                 class="mainbutton2"
-                @click="canclesign(item.id)"
-                >取消报名</el-button
+                @click="deleteNotification(item.id)"
+                >删除</el-button
               >
             </li>
           </ul>
@@ -120,27 +111,36 @@
 
 <script setup name="signedActivities">
 import { onMounted, ref } from 'vue';
-import { Select, Edit, Bell, Setting } from '@element-plus/icons-vue';
+import { Bell, Setting, Comment, Search } from '@element-plus/icons-vue';
 import { getUsermsgApi } from '@/$http/apis/userCheckmsg.api';
+// import { signedActivitiesApi } from '@/$http/apis/signedActivities.api';
 import {
-  signedActivitiesApi,
-  canclesignApi,
-} from '@/$http/apis/signedActivities.api';
+  getNotificationsApi,
+  searchNotificationsApi,
+  deleteNotificationsApi,
+} from '@/$http/apis/checkNotifications.api';
 import { useRouter } from 'vue-router';
 import logo from '@/assets/logo.png';
 const avatar = ref('');
 const uname = ref();
 const stuNo = ref();
-const activities = ref([]);
-const getsignedActivities = async () => {
-  const res = await signedActivitiesApi();
-  activities.value = res.data;
-  // console.log(activities.value[0].title);
-  if (activities.value == null) {
-    alert('你还没有报名的活动哦！快去报名精彩的活动吧');
+const input = ref('');
+const notifications = ref([]);
+const getAllNotifications = async () => {
+  const res = await getNotificationsApi();
+  notifications.value = res.data;
+  if (notifications.value == null) {
+    alert('你暂时没有待查看的通知🙌');
   }
 };
-
+const deleteNotification = async (id) => {
+  // console.log(typeof Number(id));
+  const res = await deleteNotificationsApi({ id: id });
+  if (res.success == true) {
+    alert('删除通知成功！');
+    getAllNotifications();
+  }
+};
 const getUsermsg = async () => {
   const user1 = await getUsermsgApi();
   console.log(user1.data.avatarUrl);
@@ -148,9 +148,19 @@ const getUsermsg = async () => {
   uname.value = user1.data.name;
   stuNo.value = user1.data.stuNo;
 };
+const searchNotification = async () => {
+  // console.log(input.value);
+  const res = await searchNotificationsApi({ title: input.value });
+  if (res.success == true) {
+    notifications.value = res.data;
+  } else {
+    alert('你搜索的通知不存在！');
+    input.value = '';
+  }
+};
 onMounted(() => {
   getUsermsg();
-  getsignedActivities();
+  getAllNotifications();
 });
 const router = useRouter();
 const gohome = () => {
@@ -159,38 +169,9 @@ const gohome = () => {
 const toNotification = () => {
   router.push({ path: '/checkNotifications' });
 };
-const gotocheckedActivities = () => {
-  router.push({ path: '/checkedActivities' });
-};
 const toself = () => {
   router.push({ path: '/userCheckmsg' });
 };
-const gosignin = () => {
-  router.push({ path: '/check-in' });
-};
-const canclesign = async (a_id) => {
-  const res = await canclesignApi({ a_id: a_id });
-  console.log(res);
-  if (res.success != false) {
-    getsignedActivities();
-    alert('取消报名成功');
-    // console.log(res.success);
-  } else {
-    getsignedActivities();
-    alert('取消报名活动失败，可能活动已经开始或者签到过了~');
-  }
-  // console.log(a_id);
-};
-// const ref1 = ref();
-// const ref2 = ref();
-// const changecolor = () => {
-//   ref1.value.style.backgroundColor = 'lightgray';
-//   ref2.value.style.backgroundColor = 'lightblue';
-// };
-// const changecolorback = () => {
-//   ref1.value.style.backgroundColor = 'lightblue';
-//   ref2.value.style.backgroundColor = 'lightgray';
-// };
 </script>
 
 <style scoped>
@@ -201,38 +182,39 @@ const canclesign = async (a_id) => {
   padding: 0;
 }
 .mainbutton2 {
-  position: relative;
-  top: 17px;
-  left: 380px;
+  position: absolute;
+  top: 102px;
+  left: 505px;
 }
-.mainbutton1 {
-  position: relative;
-  top: 17px;
-  left: 385px;
-}
+/* .mainbutton1 {
+  position: absolute;
+  top: 102px;
+  left: 435px;
+} */
 ul li {
   display: block;
   height: 140px;
   width: 600px;
-  /* background-color: lightblue; */
   background-color: rgb(213, 227, 231);
   margin: 5px;
 }
 p {
   font-size: 20px;
   font-weight: bold;
-  padding-top: 60px;
-  padding-left: 178px;
+  padding-top: 20px;
+  padding-left: 25px;
+  margin-bottom: 6px;
 }
 .aside {
   margin-top: 15px;
 }
-/* .myheader {
-  background-color: rgb(152, 170, 187);
-} */
+.input-with-select .el-input-group__prepend {
+  background-color: var(--el-fill-color-blank);
+}
+
 .myheader1 {
   background-color: rgba(236, 237, 218, 0.736);
-  margin-bottom: 40px;
+  margin-bottom: 25px;
 }
 .mybody {
   margin: 0 auto;
@@ -243,8 +225,8 @@ p {
   margin-left: 20px;
 }
 .hr1 {
-  width: 685px;
-  margin-left: 460px;
+  width: 755px;
+  margin-left: 380px;
 }
 
 .el-row {

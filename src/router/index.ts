@@ -78,6 +78,10 @@ const router = createRouter({
       path: '/checkedActivities',
       component: () => import('@/pages/checkedActivities.vue'),
     },
+    {
+      path: '/checkNotifications',
+      component: () => import('@/pages/checkNotifications.vue'),
+    },
   ],
 });
 
