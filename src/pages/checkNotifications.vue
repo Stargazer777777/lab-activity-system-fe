@@ -46,15 +46,35 @@
                 <div class="grid-content ep-bg-purple"
               /></el-col>
               <el-col :span="3">
-                <div style="margin-top: 16px">
-                  <el-avatar
-                    :src="avatar"
-                    style="height: 40px; width: 40px"
-                    alt="头像"
-                  />
+                <div style="" class="demo-collapse">
+                  <!-- <div class="demo-collapse"> -->
+                  <el-collapse
+                    v-model="activeName"
+                    accordion
+                    class="demo-collapse"
+                  >
+                    <el-collapse-item name="1">
+                      <template #title>
+                        <el-avatar
+                          :src="avatar"
+                          style="height: 40px; width: 40px"
+                          alt="头像"
+                        />
+                      </template>
+                      <div>
+                        <button class="down" @click="toactivity()">
+                          我的活动
+                        </button>
+                      </div>
+                      <div>
+                        <button class="down" @click="quit()">退出登录</button>
+                      </div>
+                    </el-collapse-item>
+                  </el-collapse>
+                  <!-- </div> -->
                 </div>
-                <div class="grid-content ep-bg-purple"
-              /></el-col>
+                <div class="grid-content ep-bg-purple" />
+              </el-col>
             </el-row>
             <div class="grid-content ep-bg-purple"
           /></el-col>
@@ -121,6 +141,11 @@ import {
 } from '@/$http/apis/checkNotifications.api';
 import { useRouter } from 'vue-router';
 import logo from '@/assets/logo.png';
+import { AuthTool } from '@/utils/authTool';
+const quit = () => {
+  AuthTool.removeAutorization();
+  router.push({ path: 'userLogin' });
+};
 const avatar = ref('');
 const uname = ref();
 const stuNo = ref();
@@ -172,6 +197,9 @@ const toNotification = () => {
 const toself = () => {
   router.push({ path: '/userCheckmsg' });
 };
+const toactivity = () => {
+  router.push({ path: '/signedActivities' });
+};
 </script>
 
 <style scoped>
@@ -211,7 +239,22 @@ p {
 .input-with-select .el-input-group__prepend {
   background-color: var(--el-fill-color-blank);
 }
-
+.down {
+  text-align: center;
+  height: 40px;
+  line-height: 30px;
+  margin: 1px;
+  /* background-color: lightgray; */
+  border: 0px;
+  padding: 6px;
+  z-index: 9999;
+}
+.demo-collapse {
+  height: 40px;
+  width: 68px;
+  background-color: lightgray;
+  margin-top: 16px;
+}
 .myheader1 {
   background-color: rgba(236, 237, 218, 0.736);
   margin-bottom: 25px;
