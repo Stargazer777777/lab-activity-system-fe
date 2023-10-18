@@ -101,7 +101,11 @@
           <ul>
             <li v-for="item in activities" :key="item.id">
               <p>{{ item.title }}</p>
-              <el-button type="info" round class="mainbutton1" @click="gosignin"
+              <el-button
+                type="info"
+                round
+                class="mainbutton1"
+                @click="gosignin(item.id)"
                 >点击签到</el-button
               ><el-button
                 type="info"
@@ -165,8 +169,8 @@ const gotocheckedActivities = () => {
 const toself = () => {
   router.push({ path: '/userCheckmsg' });
 };
-const gosignin = () => {
-  router.push({ path: '/check-in' });
+const gosignin = (activityId) => {
+  router.push({ path: '/check-in', query: { 'activity-id': activityId } });
 };
 const canclesign = async (a_id) => {
   const res = await canclesignApi({ a_id: a_id });
