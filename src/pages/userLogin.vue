@@ -311,10 +311,11 @@ const submitEmailCodeLoginForm = async () => {
 </script>
 <style scoped>
 .psdLogin {
-  background-color: skyblue;
   height: 400px;
   width: 500px;
   border-radius: 6px;
+  backdrop-filter: blur(5px);
+  background-color: #caeaf766;
 }
 .loginForm {
   margin-top: 20%;
