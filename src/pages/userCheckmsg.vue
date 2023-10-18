@@ -52,15 +52,29 @@
             <div class="grid-content ep-bg-purple"
           /></el-col>
           <el-col :span="3">
-            <div style="margin-top: 16px">
-              <el-avatar
-                :src="avatarUrl"
-                style="height: 40px; width: 40px"
-                alt="头像"
-              />
+            <div style="" class="demo-collapse">
+              <!-- <div class="demo-collapse"> -->
+              <el-collapse v-model="activeName" accordion class="demo-collapse">
+                <el-collapse-item name="1">
+                  <template #title>
+                    <el-avatar
+                      :src="avatarUrl"
+                      style="height: 40px; width: 40px"
+                      alt="头像"
+                    />
+                  </template>
+                  <div>
+                    <button class="down" @click="toactivity()">我的活动</button>
+                  </div>
+                  <div>
+                    <button class="down" @click="quit()">退出登录</button>
+                  </div>
+                </el-collapse-item>
+              </el-collapse>
+              <!-- </div> -->
             </div>
-            <div class="grid-content ep-bg-purple"
-          /></el-col>
+            <div class="grid-content ep-bg-purple" />
+          </el-col>
         </el-row>
       </el-header>
       <el-container class="mybody">
@@ -273,6 +287,11 @@ import { useRouter } from 'vue-router';
 import { getUsermsgApi, editUsermsgApi } from '@/$http/apis/userCheckmsg.api';
 import { uploadApi } from '@/$http/apis/file.api';
 import logo from '@/assets/logo.png';
+import { AuthTool } from '@/utils/authTool';
+const quit = () => {
+  AuthTool.removeAutorization();
+  router.push({ path: 'userLogin' });
+};
 const uname = ref('');
 const email = ref('');
 const stuNo = ref('');
@@ -362,6 +381,9 @@ const router = useRouter();
 const gohome = () => {
   router.push({ path: '/home' });
 };
+const toactivity = () => {
+  router.push({ path: '/signedActivities' });
+};
 </script>
 <style scoped>
 @import url('//unpkg.com/element-ui@2.15.6/lib/theme-chalk/index.css');
@@ -407,6 +429,21 @@ const gohome = () => {
   background-color: rgba(40, 39, 37, 0.215);
   height: 70px;
   width: 100%;
+}
+.down {
+  text-align: center;
+  height: 40px;
+  line-height: 30px;
+  margin: 1px;
+  /* background-color: lightgray; */
+  border: 0px;
+  padding: 6px;
+}
+.demo-collapse {
+  height: 40px;
+  width: 68px;
+  background-color: lightgray;
+  margin-top: 16px;
 }
 .editelrow {
   height: 70px;
