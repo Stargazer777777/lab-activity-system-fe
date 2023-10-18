@@ -4,6 +4,7 @@
     v-model="notificationStore.visiable"
     width="30%"
     @open="getUserIdsByActivityId"
+    @close="notificationStore.closeNotification"
   >
     <el-form label-width="80px" label-position="top" :inline="false">
       <el-form-item label="要发送用户的列表">
