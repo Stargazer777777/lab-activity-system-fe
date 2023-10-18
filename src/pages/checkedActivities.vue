@@ -204,7 +204,7 @@
                 type="info"
                 round
                 class="mainbutton1"
-                @click="comment(), getActivityId(item.id)"
+                @click="comment(item)"
                 >评价</el-button
               >
             </li>
@@ -253,15 +253,14 @@ const getcheckedActivities = async () => {
     alert('你还没有已签到的活动，快去签到吧');
   }
 };
-const comment = () => {
+
+const tempActivity = ref();
+const comment = (activity) => {
+  tempActivity.value = activity;
   commentref.value = true;
   commonlayout.value = false;
 };
 
-const getActivityId = (activityId) => {
-  // console.log(activityId);
-  return activityId;
-};
 const closecommentwindow = () => {
   commentref.value = false;
   commonlayout.value = true;
@@ -285,12 +284,15 @@ onMounted(() => {
   getUsermsg();
   getcheckedActivities();
 });
+
 const docomment = async () => {
-  const activityId = getActivityId();
-  console.log(activityId);
+  const nowid = tempActivity.value.id;
+  console.log(nowid);
+  console.log(input.value);
+  console.log(scored.value);
   const res = await docommentApi(
-    { id: activityId },
-    { content: input, mark: scored }
+    { content: input.value, mark: scored.value },
+    { a_id: nowid }
   );
   if (res) {
     alert('提交评价成功！感谢您的评价~😆');
