@@ -327,7 +327,7 @@ const getUsermsg = async () => {
   stuNO1.value = stuNo.value;
   pwd1.value = pwd.value;
   gender1.value = gender.value;
-  // avatarUrl1.value = avatarUrl.value;
+  avatarUrl1.value = avatarUrl.value;
 };
 getUsermsg();
 
