@@ -67,6 +67,10 @@ const router = createRouter({
       component: () => import('@/pages/checkInPage.vue'),
     },
     {
+      path: '/slide-activity-browse',
+      component: () => import('@/pages/homeFrame/slideWithActivityBrowse.vue'),
+    },
+    {
       path: '/userCheckmsg',
       component: () => import('@/pages/userCheckmsg.vue'),
     },

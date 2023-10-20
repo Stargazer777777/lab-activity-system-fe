@@ -12,9 +12,38 @@
           size="default"
         >
           <!-- 轮播图地址 -->
-          <el-form-item label="轮播图地址" prop="imgUrl">
-            <el-input v-model="formData.imgUrl"></el-input>
-          </el-form-item>
+          <el-upload
+            ref="upload"
+            :auto-upload="false"
+            @change="toavatar"
+            :show-file-list="false"
+          >
+            <template #trigger>
+              <div
+                style="
+                  border: 1px dashed #000;
+                  height: 250px;
+                  width: 600px;
+                  background-color: whitesmoke;
+                  /* line-height: 60px; */
+                  margin-top: 100px;
+                "
+              >
+                <span
+                  v-if="showPlus"
+                  style="position: absolute; bottom: 110px; left: 230px"
+                  >+ <br />
+                  请上传轮播图</span
+                >
+                <img
+                  v-else:
+                  :src="avatarUrl"
+                  alt="上传的图片"
+                  style="width: 600px; height: 250px"
+                />
+              </div>
+            </template>
+          </el-upload>
           <!-- 轮播图次序 -->
           <el-form-item label="轮播图次序" prop="slideIndex">
             <el-input v-model="formData.slideIndex"></el-input>
@@ -33,18 +62,18 @@
                 size="default"
                 @click="submit"
                 style="margin-right: 10px"
-                >提交</el-button
-              >
+                >提交
+              </el-button>
               <el-button
                 type="primary"
                 size="default"
                 @click="handleClear"
                 style="margin-right: 10px"
-                >清空</el-button
-              >
+                >清空
+              </el-button>
               <el-button type="primary" size="default" @click="exit"
-                >退出</el-button
-              >
+                >退出
+              </el-button>
             </div>
           </el-form-item>
         </el-form>
@@ -69,17 +98,40 @@ import {
 import { useRoute } from 'vue-router';
 import { NULL } from 'sass';
 import router from '@/router';
+import { uploadApi } from '@/$http/apis/slideFile.api';
 
 const route = useRoute();
 const slideId: string | undefined = route.query['slide-id'] as string;
 const maxIndex: number | undefined = route.query['slide-maxIndex'] as number;
 const formRef = ref<FormInstance>();
 const formData = ref<Partial<Slide>>({});
+const avatarUrl1 = ref();
+const avatarUrl = ref();
+const showPlus = ref(true);
+
+const toavatar = async (elfile) => {
+  const res = await uploadApi(elfile.raw);
+  // console.log(res);
+  if (res.success == true) {
+    // alert('更换头像成功！');
+    // getUsermsg();
+    avatarUrl.value = res.data;
+    var text = '图片上传成功';
+    var variable = avatarUrl.value;
+    showPlus.value = false;
+    // console.log(avatarUrl.value + '==>');
+    // console.log(avatarUrl1.value);
+    alert(text + '' + avatarUrl.value);
+    // submit();
+  }
+};
 
 const getSlideById = async (slideId: string) => {
   // 根据slideId获取活动信息
   const res = await getSlideByIdApi({ id: slideId });
   formData.value = res.data;
+  showPlus.value = false;
+  avatarUrl.value = formData.value.imgUrl;
 };
 if (slideId) {
   getSlideById(slideId);
@@ -93,7 +145,8 @@ const mode = computed(() => {
 
 const handleClear = () => {
   //清空逻辑的代码
-  formData.value.imgUrl = '';
+  avatarUrl.value = '';
+  formData.value.slideIndex = 0;
   formData.value.targetUrl = '';
 };
 
@@ -111,15 +164,18 @@ const submit = async () => {
     if (mode.value === 'add') {
       // 添加活动
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      formData.value.imgUrl = avatarUrl.value;
       await addSlideApi(formData.value as any);
       ElMessage.success('添加成功');
     }
     if (mode.value === 'edit') {
       // 修改活动
+      formData.value.imgUrl = avatarUrl.value;
       await editSlideApi(formData.value as any);
       ElMessage.success('修改成功');
     }
   } finally {
+    avatarUrl.value = '';
     submitLoading.value = false;
   }
 };
