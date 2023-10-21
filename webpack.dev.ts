@@ -28,7 +28,7 @@ export default (): DevWebpackConfig => {
           secure: false,
         },
         '/nestDevApi': {
-          target: 'http://localhost:30000',
+          target: 'http://localhost:3000',
           pathRewrite: { '^/nestDevApi': '' },
           secure: false,
         },
