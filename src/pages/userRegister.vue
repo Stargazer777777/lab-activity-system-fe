@@ -212,10 +212,11 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   background-image: url('https://pic.90sheji.com/design/00/00/10/50/5fb124ae37eb4.jpg%21/fwfh/1920x0/clip/0x1275a0a0/quality/90/unsharp/true/compress/true/watermark/url/LzkwX3dhdGVyX3Y2LnBuZw==/repeat/true');
 }
 .main {
-  background-color: skyblue;
+  background-color: #caeaf766;
   height: 400px;
   width: 500px;
   border-radius: 6px;
+  backdrop-filter: blur(5px);
 }
 .el-button--text {
   margin-right: 15px;
