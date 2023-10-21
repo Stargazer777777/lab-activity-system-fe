@@ -9,6 +9,15 @@ export interface User {
   role: string;
   status: string;
 }
+export interface Slide {
+  id: string;
+
+  imgUrl: string;
+
+  slideIndex: number;
+
+  targetUrl: string;
+}
 export interface Activity {
   id: string;
   title: string;

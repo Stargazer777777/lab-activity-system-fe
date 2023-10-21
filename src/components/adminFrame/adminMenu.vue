@@ -9,6 +9,10 @@
     <el-menu-item index="/admin/activity" key="/admin/activity"
       >活动管理</el-menu-item
     >
+    <el-menu-item index="/admin/user" key="/admin/user">用户管理</el-menu-item>
+    <el-menu-item index="/admin/slide" key="/admin/slide"
+      >轮播图管理</el-menu-item
+    >
   </el-menu>
 </template>
 
