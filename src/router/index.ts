@@ -21,6 +21,22 @@ const router = createRouter({
           component: () => import('@/pages/adminFrame/activityAdmin.vue'),
         },
         {
+          path: 'user',
+          component: () => import('@/pages/adminFrame/userAdmin.vue'),
+        },
+        {
+          path: 'slide',
+          component: () => import('@/pages/adminFrame/slideAdmin.vue'),
+        },
+        {
+          path: 'add-edit-user',
+          component: () => import('@/pages/adminFrame/addOrEditUser.vue'),
+        },
+        {
+          path: 'add-edit-slide',
+          component: () => import('@/pages/adminFrame/addOrEditSlide.vue'),
+        },
+        {
           path: 'add-edit-activity',
           component: () => import('@/pages/adminFrame/addOrEditActivity.vue'),
         },
@@ -49,6 +65,10 @@ const router = createRouter({
     {
       path: '/check-in',
       component: () => import('@/pages/checkInPage.vue'),
+    },
+    {
+      path: '/slide-activity-browse',
+      component: () => import('@/pages/homeFrame/slideWithActivityBrowse.vue'),
     },
     {
       path: '/userCheckmsg',
