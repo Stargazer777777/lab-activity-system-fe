@@ -285,19 +285,6 @@ onMounted(() => {
   getcheckedActivities();
 });
 
-<<<<<<< HEAD
-const id1 = ref();
-const getActivityId = (activityId) => {
-  id1.value = activityId;
-  console.log(id1.value);
-};
-const docomment = async () => {
-  // console.log(input.value);
-  // console.log(scored.value);
-  const res = await docommentApi(
-    { a_id: id1.value },
-    { content: input.value, mark: Number(scored.value) }
-=======
 const docomment = async () => {
   const nowid = tempActivity.value.id;
   console.log(nowid);
@@ -306,7 +293,6 @@ const docomment = async () => {
   const res = await docommentApi(
     { content: input.value, mark: scored.value },
     { a_id: nowid }
->>>>>>> dc7ef300e55c8c0142c5420cd13b23ebc2142932
   );
   if (res) {
     alert('提交评价成功！感谢您的评价~😆');
